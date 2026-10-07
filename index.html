@@ -1,0 +1,1492 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>仕事をさがそう｜インターンシップ職種理解アプリ</title>
+<style>
+  :root{
+    --bg:#f7f8fb; --card:#fff; --text:#1f2937; --muted:#6b7280;
+    --line:#dbe1ea; --accent:#2563eb; --accent2:#eef4ff;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,"Segoe UI","Noto Sans JP",sans-serif;background:var(--bg);color:var(--text)}
+  .wrap{max-width:980px;margin:auto;padding:24px}
+  h1{font-size:30px;margin:0 0 8px}
+  h2{font-size:23px;margin:0 0 16px}
+  h3{font-size:18px;margin:0 0 10px}
+  h4{font-size:17px;margin:0 0 8px}
+  p{line-height:1.8}
+  .lead{color:var(--muted);margin-top:0}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:0 3px 12px rgba(0,0,0,.04)}
+  button{font:inherit}
+  .bigbtn,.choice,.jobbtn,.taskbtn{width:100%;text-align:left;background:#fff;border:2px solid var(--line);border-radius:16px;padding:18px;cursor:pointer}
+  .bigbtn:hover,.choice:hover,.jobbtn:hover,.taskbtn:hover{border-color:var(--accent);background:var(--accent2)}
+  .bigbtn strong{display:block;font-size:20px;margin-bottom:6px}
+  .choice{margin:8px 0}
+  .choice.selected{border-color:var(--accent);background:var(--accent2)}
+  .nav{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap}
+  .primary,.secondary{border:0;border-radius:12px;padding:12px 18px;cursor:pointer}
+  .primary{background:var(--accent);color:#fff}
+  .secondary{background:#e9edf3;color:var(--text)}
+  .tag{display:inline-block;border-radius:999px;background:#eef2f7;padding:5px 10px;margin:3px;font-size:14px}
+  .score{font-size:14px;color:var(--muted)}
+  .hidden{display:none}
+  .result-title{display:flex;justify-content:space-between;gap:12px;align-items:center}
+  .job-list{display:grid;gap:12px}
+  ul,ol{padding-left:1.3em;line-height:1.8}
+  .note{font-size:13px;color:var(--muted);background:#f3f4f6;border-radius:12px;padding:12px}
+  .breadcrumb{font-size:14px;color:var(--muted);margin-bottom:12px}
+  .tasks{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}
+  .taskbtn strong{display:block;font-size:17px;margin-bottom:6px}
+  .taskbtn span{color:var(--muted);font-size:14px}
+  .task-detail{border-left:6px solid var(--accent)}
+  .label{font-weight:700;margin-top:14px}
+  .mini{font-size:14px;color:var(--muted)}
+  .task-image{width:100%;max-height:300px;object-fit:contain;border-radius:16px;border:1px solid var(--line);background:#fff;margin:8px 0 18px}
+  .task-thumb{width:100%;height:145px;object-fit:contain;border-radius:12px;border:1px solid var(--line);background:#fff;margin-bottom:10px}
+
+  .rating-box{margin-top:16px;padding:14px;border-radius:14px;background:#fff7ed;border:1px solid #fed7aa}
+  .rating-title{font-weight:700;margin-bottom:8px}
+  .stars{display:flex;gap:6px;flex-wrap:wrap}
+  .star{font-size:30px;line-height:1;border:0;background:transparent;cursor:pointer;padding:2px}
+  .star.off{filter:grayscale(1);opacity:.28}
+  .star.zero{font-size:14px;padding:7px 10px;border-radius:10px;background:#f3f4f6;color:#374151}
+  .star.zero.active{background:#111827;color:#fff}
+  .rating-value{font-size:14px;color:var(--muted);margin-top:6px}
+  .saved-badge{display:inline-block;font-size:12px;padding:4px 8px;border-radius:999px;background:#ecfdf5;color:#065f46;margin-left:6px}
+
+  .rating-box.unrated{background:#f8fafc;border-color:#cbd5e1}
+  .rating-box.rated{background:#fff7ed;border-color:#fb923c}
+  .rating-box.unknown{background:#eff6ff;border-color:#60a5fa}
+  .unknown-btn{
+    border:1px solid #93c5fd;background:#fff;color:#1d4ed8;
+    font-weight:700;border-radius:10px;padding:8px 12px;cursor:pointer
+  }
+  .unknown-btn.active{background:#2563eb;color:#fff;border-color:#2563eb}
+  .experienced-btn{
+    border:1px solid #86efac;background:#fff;color:#166534;
+    font-weight:700;border-radius:10px;padding:8px 12px;cursor:pointer
+  }
+  .experienced-btn.active{background:#16a34a;color:#fff;border-color:#16a34a}
+  .rating-box.experienced{box-shadow:inset 0 0 0 2px #86efac}
+  .unknown-list{display:grid;gap:10px}
+  .unknown-item{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px}
+
+  .value-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+  .value-card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px}
+  .value-card.rated{border-color:var(--line);background:#fff}
+  .value-item{padding:10px;border:1px solid #e5e7eb;border-radius:12px;margin:8px 0;background:#fff}
+  .value-item.rated{border-color:#c4b5fd;background:#faf5ff}
+
+  .value-card h3{margin:0 0 8px;font-size:18px}
+  .value-items{margin:0;padding-left:20px}
+  .value-items li{margin:8px 0}
+  .value-items small{display:block;color:var(--muted);margin-top:2px;line-height:1.5}
+  .value-stars{display:flex;align-items:center;gap:5px;margin-top:12px;flex-wrap:wrap}
+  .value-star{font-size:29px;line-height:1;border:0;background:transparent;cursor:pointer;padding:2px}
+  .value-star.off{filter:grayscale(1);opacity:.25}
+  .value-rank-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+  .value-rank-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .value-rank-no{font-size:20px;font-weight:800}
+  .value-chip{display:inline-block;font-size:12px;padding:4px 8px;border-radius:999px;background:#ede9fe;color:#6d28d9;font-weight:700}
+
+  .jobbtn{position:relative}
+  .job-rank-badge{
+    position:absolute;top:10px;right:10px;
+    min-width:48px;text-align:center;
+    padding:5px 9px;border-radius:999px;
+    background:#2563eb;color:#fff;font-weight:800;font-size:13px;
+    box-shadow:0 2px 8px rgba(37,99,235,.22)
+  }
+
+  .ranking{display:grid;gap:10px}
+  .rank-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px}
+  .rank-head{display:flex;justify-content:space-between;gap:10px;align-items:center}
+  .rank-num{font-weight:800;font-size:22px}
+  .rank-score{font-weight:700}
+  .rated-list{display:grid;gap:10px}
+  .rated-item{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px}
+  .rated-item .meta{font-size:13px;color:var(--muted);margin-top:4px}
+
+  @media (max-width:600px){
+    .wrap{padding:16px}
+    h1{font-size:25px}
+    .tasks{grid-template-columns:1fr}
+  }
+
+  .value-item-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+  .important-star{flex:0 0 auto;border:0;background:transparent;color:#cbd5e1;font-size:27px;line-height:1;cursor:pointer;padding:0 2px}
+  .important-star.active{color:#dc2626}
+  .value-choice-row{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+  .value-choice{border:1px solid #cbd5e1;background:#fff;color:#334155;border-radius:999px;padding:7px 11px;font-size:12px;font-weight:700;cursor:pointer}
+  .value-choice.selected{background:#dbeafe;border-color:#60a5fa;color:#1d4ed8}
+
+
+@media(max-width:760px){.value-grid{grid-template-columns:1fr}}
+
+  .value-choice.no-pref{background:#f1f5f9;border-color:#cbd5e1;color:#64748b}
+  .value-choice.no-pref.selected{background:#e2e8f0;border-color:#94a3b8;color:#475569}
+  .important-star:disabled{color:#e2e8f0;cursor:not-allowed;opacity:.75}
+
+
+  .value-item.no-pref-item{
+    background:#f1f5f9;
+    border:2px dashed #94a3b8;
+    color:#111827;
+  }
+  .value-item.no-pref-item small{color:#475569 !important}
+  .value-item.important-item{
+    border:2px solid #fca5a5;
+    background:#fff7f7;
+    box-shadow:0 0 0 2px rgba(239,68,68,.06);
+  }
+  .value-item.important-item strong{color:#991b1b}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>仕事をさがそう</h1>
+    <p class="lead">インターンシップに向けて、自分に合いそうな仕事を探したり、仕事の内容を知ったりするアプリです。</p>
+  </header>
+
+  <main>
+    <section id="home">
+      <div class="grid">
+<button class="bigbtn" onclick="startQuiz()">
+          <strong>自分から探す</strong>
+          いくつかの質問に答えて、合いそうな仕事を見つける
+        </button>
+<button class="bigbtn" onclick="showJobs()">
+          <strong>仕事から探す</strong>
+          職種を選んで、仕事内容をくわしく見る
+        </button>
+<button class="bigbtn" onclick="showInterests()">
+          <strong>☆をつけた仕事を見る</strong>
+          興味のある仕事内容と、自分の仕事ランキングを見る
+        </button>
+<button class="bigbtn" onclick="showValues()">
+          <strong>働く価値観チェックシート</strong>
+          はたらくときに大切にしたいことを考える
+        </button>
+        
+        
+        
+        
+
+      </div>
+    </section>
+
+    <section id="quiz" class="hidden">
+      <div class="breadcrumb">ホーム ＞ 自分から探す</div>
+      <h2 id="qTitle"></h2>
+      <div id="choices"></div>
+      <div class="nav"><button class="secondary" onclick="prevQuestion()">もどる</button></div>
+    </section>
+
+    <section id="results" class="hidden">
+      <div class="breadcrumb">ホーム ＞ 自分から探す ＞ 結果</div>
+      <h2>あなたに合いそうな仕事</h2>
+      <p class="lead">「向いている・向いていない」を決めるものではなく、仕事を知るための候補です。</p>
+      <div id="resultList" class="job-list"></div>
+      <div class="nav">
+        <button class="primary" onclick="startQuiz()">もう一度やる</button>
+        <button class="secondary" onclick="goHome()">ホームへ</button>
+      </div>
+    </section>
+
+    <section id="jobs" class="hidden">
+      <div class="breadcrumb">ホーム ＞ 仕事から探す</div>
+      <h2>職種を選ぶ</h2>
+      <div id="jobGrid" class="grid"></div>
+      <div class="nav"><button class="secondary" onclick="goHome()">ホームへ</button></div>
+    </section>
+
+    <section id="detail" class="hidden">
+      <div class="breadcrumb">ホーム ＞ 仕事から探す ＞ 詳細</div>
+      <div id="detailBody"></div>
+      <div class="nav">
+        <button class="secondary" onclick="showJobs()">職種一覧へ</button>
+        <button class="secondary" onclick="goHome()">ホームへ</button>
+      </div>
+    </section>
+
+
+
+    <section id="values" class="hidden">
+      <div class="breadcrumb">ホーム ＞ 価値観チェックシート</div>
+      <h2>はたらく価値観チェックシート</h2>
+      <p class="lead">はたらくときに「自分が大切にしたい」と思うことを考えて、小項目一つひとつに★1〜5をつけてみよう。</p>
+
+      <h2>働く価値観チェック</h2>
+      <p class="lead">小項目ごとに、自分に合う選択肢を選びます。特に大事だと思う小項目には右上の★をつけます。</p>
+      <div class="nav" style="margin-bottom:14px">
+        <button class="primary" onclick="downloadValueOnePager()">価値観ワンペーパーで保存</button>
+      </div>
+      <div id="valueRanking" class="ranking"></div>
+
+      <br>
+      <div id="valueGrid" class="value-grid"></div>
+
+      <div class="nav">
+        <button class="secondary" onclick="goHome()">ホームへ</button>
+      </div>
+    </section>
+
+    <section id="interests" class="hidden">
+      <div class="breadcrumb">ホーム ＞ ☆をつけた仕事</div>
+      <h2>自分の興味ある仕事ランキング</h2>
+      <p class="lead">仕事内容につけた☆の合計から、興味が高い職種を最大5位まで表示します。</p>
+      <div class="nav" style="margin-bottom:14px">
+        <button class="primary" onclick="downloadOnePager()">結果をワンペーパーで保存</button>
+      </div>
+      <div id="jobRanking" class="ranking"></div>
+
+      <br>
+      <h2>☆をつけた仕事内容一覧</h2>
+      <p class="lead">☆1〜5をつけた仕事内容を、☆の多い順に表示します。</p>
+      <div id="ratedTasks" class="rated-list"></div>
+
+      <br>
+      <h2>よくわからない仕事内容一覧</h2>
+      <p class="lead">「よくわからない」を選んだ仕事内容を表示します。</p>
+      <div id="unknownTasks" class="unknown-list"></div>
+
+      <div class="nav">
+        <button class="secondary" onclick="goHome()">ホームへ</button>
+      </div>
+    </section>
+
+    <section id="taskDetail" class="hidden">
+      <div class="breadcrumb" id="taskBreadcrumb"></div>
+      <div id="taskDetailBody"></div>
+      <div class="nav">
+        <button class="secondary" id="backToJobBtn">この職種にもどる</button>
+        <button class="secondary" onclick="goHome()">ホームへ</button>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script>
+const T=(name,summary,detail,steps,point)=>({name,summary,detail,steps,point});
+
+const jobs = {
+  "小売":{
+    examples:["スーパー","ドラッグストア","ホームセンター","アパレル"],
+    tasks:[
+      T("青果の袋詰め・パッキング","野菜や果物を袋やパックに入れる仕事",
+        "売り場に出す野菜や果物を、決められた数や重さにそろえて袋・パックに入れます。傷んでいないかも確認し、値札やラベルを付ける場合もあります。",
+        ["商品に傷みや汚れがないか確認する","決められた数・重さにそろえる","袋やパックにきれいに入れる","必要に応じてラベルや値札を付ける"],"商品を傷つけないこと、数や重さを間違えないことが大切です。"),
+      T("商品補充・陳列","商品を売り場の棚に並べる仕事",
+        "倉庫やバックヤードから商品を運び、決められた棚に並べます。商品が前を向いているか、同じ種類がそろっているか、足りない商品がないかも確認します。",
+        ["補充する商品を確認する","商品を売り場まで運ぶ","決められた場所に並べる","向きや数を整えて確認する"],"商品名や棚の場所を覚え、同じ商品を正しい場所に置くことが大切です。"),
+      T("お総菜の製造","お弁当や総菜を作り、パックに入れる仕事",
+        "決められた手順にそって、材料を量ったり、盛り付けたり、パックに詰めたりします。衛生のルールを守りながら作業します。",
+        ["手洗い・身支度をする","材料や容器を準備する","決められた量で盛り付ける","ふたをしてラベルを確認する"],"手順と衛生ルールを守り、量をそろえることが大切です。"),
+      T("伝票確認・数の照合","伝票の数と実際の商品数を比べる仕事",
+        "伝票に書かれている商品名や個数と、実際に届いた商品が合っているかを確認します。違いがあれば担当者に伝えます。",
+        ["伝票の商品名を見る","実際の商品を数える","伝票の数と比べる","違いがあれば報告する"],"数え間違いをせず、分からない時は確認することが大切です。"),
+      T("開店準備","お店を開ける前に売り場を整える仕事",
+        "カートを並べる、入口を整える、商品棚を確認する、掃除をするなど、お客様を迎える準備をします。",
+        ["入口や売り場を確認する","カートや買い物かごをそろえる","棚の乱れや不足を確認する","必要な場所を掃除する"],"決められた時間までに、順番よく準備することが大切です。"),
+      T("店舗内外の清掃","店の中や外をきれいにする仕事",
+        "床、入口、通路、駐車場などを掃除し、ごみを回収します。お客様が安全に利用できるように整えます。",
+        ["清掃場所を確認する","ごみを集める","床や通路を掃く・拭く","終わった場所を確認する"],"お客様の通行をじゃましないこと、安全に道具を使うことが大切です。"),
+      T("レジ補助（袋詰め）","会計後の商品を袋に入れる仕事",
+        "会計が終わった商品を、重い物・軽い物、つぶれやすい物などを考えながら袋に入れます。必要に応じてかごの整理もします。",
+        ["商品を受け取る","重さや形を見て入れる順番を考える","袋に入れる","袋やかごを整える"],"商品をつぶさず、ていねいに扱うことが大切です。"),
+      T("衣類のたたみ・ハンガーがけ","服をきれいに整えて売り場に出す仕事",
+        "衣類を決められたたたみ方でそろえたり、ハンガーにかけたりします。サイズや種類ごとに分けることもあります。",
+        ["衣類の種類やサイズを確認する","決められた形にたたむ","ハンガーにかける","売り場の決められた場所に並べる"],"見た目をそろえ、サイズや種類を間違えないことが大切です。"),
+      T("お客様対応","お客様の質問に答えたり案内したりする仕事",
+        "商品の場所を聞かれた時に案内したり、分からない時は担当者を呼んだりします。あいさつや丁寧な言葉づかいが必要です。",
+        ["あいさつをする","お客様の話を聞く","分かることは案内する","分からない時は担当者に確認する"],"無理に答えず、分からない時は周りの人に確認することが大切です。")
+    ],
+    skills:["人と関わる","いろいろな仕事","体を動かす","丁寧さ"],
+    note:"必要な力は、仕事内容から考えた目安です。"
+  },
+
+  "飲食":{
+    examples:["ファミレス","食堂（社員／学生）","厨房"],
+    tasks:[
+      T("食器洗浄","使い終わった食器を洗って元の場所に戻す仕事",
+        "皿やコップ、調理器具などを集め、汚れを落として洗浄機に入れたり手洗いしたりします。乾いた食器を種類ごとに戻します。",
+        ["食器を種類ごとに分ける","残った食べ物を取り除く","洗浄機や手洗いで洗う","乾いた食器を決められた場所へ戻す"],"割れ物の扱いと、洗い残しがないかの確認が大切です。"),
+      T("調理補助（計量・皿だし・盛り付けなど）","料理を作る人の手伝いをする仕事",
+        "食材を決められた量に分ける、皿を準備する、料理を同じ形に盛り付けるなど、調理の一部を担当します。",
+        ["必要な材料や皿を準備する","決められた量を量る","盛り付ける","不足や間違いがないか確認する"],"衛生、量、盛り付けの見た目をそろえることが大切です。"),
+      T("開店前の仕込み","営業前に料理の材料を準備する仕事",
+        "野菜を決められた量に分ける、容器を準備する、ソースを補充するなど、営業が始まったらすぐ調理できるように準備します。",
+        ["その日の準備内容を確認する","食材や容器をそろえる","決められた量に分ける","冷蔵庫など決められた場所へ戻す"],"手順を守り、食材を清潔に扱うことが大切です。"),
+      T("店舗内外の清掃","客席や店の周りをきれいにする仕事",
+        "床、テーブル、入口、店の外などを掃除します。お客様が気持ちよく安全に利用できる状態にします。",
+        ["清掃場所を確認する","ごみを集める","床やテーブルを掃除する","終わった場所を確認する"],"お客様や他の職員の動きを見ながら安全に行います。"),
+      T("お客様への商品提供","できあがった料理をお客様へ運ぶ仕事",
+        "注文された料理や飲み物を確認し、正しいテーブルへ運びます。声をかけて丁寧に置きます。",
+        ["料理名とテーブルを確認する","料理を安全に持つ","正しい席まで運ぶ","声をかけて料理を置く"],"料理をこぼさないこと、テーブルを間違えないことが大切です。")
+    ],
+    skills:["人と関わる","体を動かす","スピード","いろいろな仕事"],
+    note:"必要な力は、仕事内容から考えた目安です。"
+  },
+
+  "物流":{
+    examples:["運送系","倉庫系"],
+    tasks:[
+      T("大小さまざまな荷物の運搬","荷物を決められた場所まで運ぶ仕事",
+        "箱やケースを台車にのせて、倉庫の中や決められた場所へ運びます。重い物は無理をせず、決められた持ち方や道具を使います。",
+        ["荷物の行き先を確認する","持てる重さか確認する","台車などにのせる","決められた場所まで運ぶ"],"安全な持ち方と、荷物をぶつけたり落としたりしないことが大切です。"),
+      T("カートの運搬・清掃","カートを集めて、きれいに整える仕事",
+        "使い終わったカートを回収し、決められた場所へ運びます。汚れがあれば拭き、台数をそろえます。",
+        ["カートを回収する","周りを見て安全に運ぶ","汚れを確認して拭く","決められた場所に並べる"],"人や物にぶつからないように周囲を見ることが大切です。"),
+      T("伝票整理","荷物についている書類を分けてそろえる仕事",
+        "伝票を会社名、届け先、番号などで分類し、決められた順番に並べたりファイルに入れたりします。",
+        ["伝票の文字や番号を見る","決められた分け方で分類する","順番に並べる","不足や重複がないか確認する"],"数字や文字をよく見て、違う伝票を混ぜないことが大切です。"),
+      T("郵便物の仕分け","郵便物を届け先ごとに分ける仕事",
+        "封筒や荷物に書かれた部署名、会社名、番号などを見て、決められた箱や棚へ分けます。",
+        ["宛先を確認する","分類ルールを確認する","決められた場所へ入れる","入れ間違いがないか確認する"],"似た名前や番号を見間違えないことが大切です。"),
+      T("ピッキング","注文された商品を倉庫の棚から集める仕事",
+        "リストや端末に表示された商品名・番号・個数を見て、倉庫の棚から必要な商品だけを集めます。買い物のように商品を探してそろえる仕事です。",
+        ["リストで商品名・番号・個数を確認する","棚の場所を探す","必要な数だけ商品を取る","最後に商品と数をもう一度確認する"],"似た商品を間違えないこと、個数を正しくそろえることが大切です。"),
+      T("荷受け","会社に届いた荷物を受け取り、内容を確認する仕事",
+        "トラックなどで届いた商品を受け取り、伝票と商品名・個数が合っているか確認します。その後、倉庫の決められた場所へ移します。",
+        ["届いた荷物と伝票を受け取る","商品名と個数を確認する","破損がないか確認する","決められた場所へ運ぶ"],"荷物の数や状態をよく確認し、違いがあればすぐ報告します。"),
+      T("出庫準備","発送する商品をそろえて、出せる状態にする仕事",
+        "注文に合わせて集められた商品を確認し、箱に入れたりラベルを貼ったりして、配送できる状態にします。",
+        ["商品と伝票を照合する","必要に応じて箱に詰める","ラベルや送り状を付ける","発送場所へ移す"],"届け先・商品・個数を間違えないことが大切です。")
+    ],
+    skills:["体を動かす","同じ作業","正確さ","一人で集中"],
+    note:"必要な力は、仕事内容から考えた目安です。"
+  },
+
+  "事務":{
+    examples:["オフィス内での事務系の軽作業"],
+    tasks:[
+      T("文書のPDF化","紙の書類をパソコンで見られるデータにする仕事",
+        "紙の書類をスキャナーで読み取り、PDFというデータにします。向きやページ抜けがないか確認し、決められた名前で保存します。",
+        ["書類の順番を確認する","スキャナーで読み取る","画面で向きや抜けを確認する","決められた名前で保存する"],"ページの順番や保存場所を間違えないことが大切です。"),
+      T("スキャン","紙を機械で読み取り、画像やデータにする仕事",
+        "書類をスキャナーにセットし、パソコンや複合機を使って読み取ります。曲がりや裏表、読み取り漏れを確認します。",
+        ["紙の向きと順番をそろえる","スキャナーにセットする","読み取りを実行する","画像を確認する"],"紙の順番を崩さず、読み取り漏れを確認します。"),
+      T("PC内の適切なフォルダへの仕分け","パソコンのデータを決められた場所に整理する仕事",
+        "ファイル名や内容を見て、「○月」「会社別」「種類別」など決められたフォルダへ移動します。",
+        ["ファイル名や内容を見る","入れるフォルダを確認する","ファイルを移動する","間違った場所にないか確認する"],"似たフォルダ名を見間違えないことが大切です。"),
+      T("社内メール便の仕分け","会社内で届ける封筒や書類を部署ごとに分ける仕事",
+        "宛先に書かれた部署名や人名を確認し、決められた箱や棚に仕分けます。",
+        ["宛先を見る","部署や人を確認する","決められた箱へ入れる","入れ間違いがないか確認する"],"名前や部署を正確に読むことが大切です。"),
+      T("資料の丁合（ホチキス止め・のりづけ等）","複数の紙を正しい順番にそろえて一つの資料にする仕事",
+        "1ページ目、2ページ目…のように紙を順番にそろえ、ホチキスやのりでまとめます。",
+        ["必要な種類の紙を並べる","1セットずつ順番に取る","ホチキスなどでまとめる","ページ抜けがないか確認する"],"同じ順番を正確に繰り返すことが大切です。"),
+      T("資料発送準備","資料を封筒や箱に入れて送れる状態にする仕事",
+        "送り先に合わせて資料をそろえ、封筒に入れ、宛名ラベルを貼ります。必要な部数が入っているか確認します。",
+        ["送り先と必要部数を確認する","資料をそろえる","封筒や箱に入れる","宛名ラベルを確認して貼る"],"送り先と中身を間違えないことが大切です。"),
+      T("シュレッダー","不要な書類を機械で細かくする仕事",
+        "捨てることが決まった書類をシュレッダーに入れます。ホチキスやクリップを外す必要がある場合があります。",
+        ["捨ててよい書類か確認する","クリップなどを外す","少量ずつ機械に入れる","ごみがいっぱいになったら交換する"],"必要な書類を間違えて捨てないことが最も大切です。"),
+      T("コピー用紙補充","コピー機に用紙を足す仕事",
+        "コピー機の紙が少なくなったら、指定されたサイズの用紙をトレーに入れます。",
+        ["不足している用紙サイズを確認する","包装を開ける","向きをそろえてトレーに入れる","トレーを閉めて確認する"],"A4・A3などサイズを間違えないことが大切です。")
+    ],
+    skills:["一人で集中","正確さ","パソコン","いろいろな仕事"],
+    note:"必要な力は、仕事内容から考えた目安です。"
+  },
+
+  "清掃・環境整備":{
+    examples:["学校","高齢者施設","美術館など"],
+    tasks:[
+      T("共有部分の清掃（廊下・階段・ホール・トイレ・会議スペース・休憩スペースなど）","たくさんの人が使う場所をきれいにする仕事",
+        "床を掃く・拭く、ごみを回収する、手すりや机を拭くなど、場所に合った方法で清掃します。",
+        ["清掃する場所を確認する","ごみを回収する","床や設備を掃除する","汚れが残っていないか確認する"],"場所ごとに道具や清掃方法が違うため、手順を守ることが大切です。"),
+      T("建物外回りの環境整備（除草・落ち葉回収・ゴミ回収・花壇等の整備）","建物の外を安全できれいに保つ仕事",
+        "草を抜く、落ち葉を集める、ごみを拾う、花壇を整えるなど、建物の周りをきれいにします。",
+        ["作業場所と道具を確認する","草・落ち葉・ごみを集める","袋などにまとめる","道具を片付けて仕上がりを確認する"],"暑さや天候に注意し、道具を安全に使うことが大切です。")
+    ],
+    skills:["体を動かす","同じ作業","一人で集中","丁寧さ"],
+    note:"必要な力は、仕事内容から考えた目安です。"
+  },
+
+  "製造":{
+    examples:["食品製造","部品等の製造"],
+    tasks:[
+      T("ラインに入っての食品製造（弁当具材置き・サンドイッチ製造・容器のフタ取り付け・箱詰め等）","流れてくる商品に決められた作業を続けて行う仕事",
+        "ベルトコンベアなどで流れてくる商品に、具材を置く、ふたを付ける、箱に入れるなど、自分の担当作業を繰り返します。",
+        ["身支度と手洗いをする","担当する作業を確認する","流れてくる商品に同じ作業をする","異常があれば止めたり報告したりする"],"同じ手順を正確に続け、衛生ルールを守ることが大切です。"),
+      T("工業用のネジなどの部品製造","小さな部品を作ったり検査したりする仕事",
+        "機械から出てきた部品を確認する、数をそろえる、傷や形の違いを見つけるなどの作業があります。",
+        ["部品や見本を確認する","部品を作る・受け取る","形や傷を確認する","決められた数にそろえる"],"小さな違いに気づくことと、数を正確にそろえることが大切です。"),
+      T("段ボール製造","段ボールを組み立てたり加工したりする仕事",
+        "板状の段ボールを折る、組み立てる、のり付けするなどして箱の形にします。",
+        ["材料をそろえる","折り線に沿って折る","組み立てる・のり付けする","形やずれを確認する"],"決められた形に同じように仕上げることが大切です。"),
+      T("梱包","商品を安全に送れるよう箱や袋に入れる仕事",
+        "商品を箱や袋に入れ、必要に応じて緩衝材を入れます。テープで閉じ、ラベルを貼ります。",
+        ["商品と数量を確認する","箱や袋を準備する","商品を入れて保護する","封をしてラベルを確認する"],"商品を傷つけず、中身とラベルを間違えないことが大切です。"),
+      T("運搬","材料や完成品を決められた場所へ移す仕事",
+        "台車などを使って、材料や製品を作業場所・保管場所へ運びます。",
+        ["運ぶ物と行き先を確認する","安全に持つ・台車に載せる","決められた通路を通る","指定場所に置く"],"周囲を確認し、安全に運ぶことが大切です。")
+    ],
+    skills:["同じ作業","正確さ","スピード","体を動かす"],
+    note:"必要な力は、仕事内容から考えた目安です。"
+  },
+
+  "その他":{
+    examples:["保育","介護補助","洗車","リサイクル"],
+    tasks:[
+      T("施設内の清掃","施設の中を清潔に保つ仕事",
+        "廊下、部屋、共有スペースなどを掃除し、ごみを回収します。利用者がいる施設では周りに配慮しながら作業します。",
+        ["清掃場所を確認する","ごみを集める","床や設備を掃除する","利用者のじゃまになっていないか確認する"],"周囲の人への配慮と安全確認が大切です。"),
+      T("お茶出し","飲み物を用意して利用者や来客へ出す仕事",
+        "人数を確認し、お茶や水を準備して、こぼさないように運びます。終わったら食器を回収します。",
+        ["人数を確認する","飲み物と食器を準備する","安全に運んで配る","食器を回収する"],"熱い物を扱う場合は特に安全に注意します。"),
+      T("下膳","食べ終わった食器を片付ける仕事",
+        "テーブルから食器を集め、決められた場所まで運びます。残飯やごみを分けることもあります。",
+        ["食事が終わったことを確認する","食器を安全に集める","決められた場所へ運ぶ","食器やごみを分ける"],"利用者の動きを見ながら、食器を落とさずに運ぶことが大切です。"),
+      T("利用者の見守り","利用者が安全に過ごせるよう周りを見る仕事",
+        "高齢者施設などで、利用者の様子を見ながら、困っていることや危険がないかを確認します。必要な時は職員に伝えます。",
+        ["利用者の様子を見る","困っている様子がないか確認する","必要に応じて声をかける","変化があれば職員へ伝える"],"自分だけで判断せず、気づいたことを職員に報告することが大切です。"),
+      T("レクリエーションの補助","活動が進みやすいよう準備や手伝いをする仕事",
+        "ゲームや体操などの準備、道具配り、参加者への声かけ、片付けなどをします。",
+        ["活動内容を確認する","道具を準備する","参加者を手伝う","道具を片付ける"],"相手の様子を見て、必要な手伝いをすることが大切です。"),
+      T("子どもの見守り","子どもが安全に遊べるように様子を見る仕事",
+        "保育施設などで子どもの遊びを見守り、危ない行動がないか確認します。必要に応じて玩具の準備や片付けも行います。",
+        ["子どもの人数や場所を確認する","遊んでいる様子を見る","危険があれば職員へ伝える","玩具や場所を片付ける"],"子どもから目を離さず、困った時は必ず職員に相談します。"),
+      T("給食準備","食事を配る前の準備をする仕事",
+        "トレー、食器、箸などをそろえ、料理を決められた場所へ準備します。",
+        ["人数を確認する","食器やトレーをそろえる","料理を準備する","不足がないか確認する"],"人数や食事内容を間違えないよう確認することが大切です。"),
+      T("玩具の消毒","子どもが使う玩具を清潔にする仕事",
+        "玩具を拭く、消毒液を使う、乾かす、種類ごとに戻すなどの作業をします。",
+        ["玩具を集める","決められた方法で消毒する","乾かす","種類ごとに片付ける"],"消毒の方法を守り、壊れた玩具がないかも確認します。"),
+      T("ディーラーでの洗車業務","車の外側や車内をきれいにする仕事",
+        "車体を水で流して洗剤で洗い、拭き上げます。車内の掃除機がけや窓拭きを行う場合もあります。",
+        ["車と作業内容を確認する","水洗い・洗剤で洗う","水分を拭き取る","車内や窓を必要に応じて清掃する"],"車を傷つけないこと、濡れた床で滑らないよう注意することが大切です。"),
+      T("ビン・カンのリサイクル","資源ごとに分けて再利用できる状態にする仕事",
+        "集められたビンや缶を種類ごとに分け、異物を取り除きます。決められた場所にまとめます。",
+        ["安全用具を付ける","ビン・缶・その他を分ける","異物を取り除く","種類ごとにまとめる"],"割れたビンなどに注意し、安全用具とルールを守ることが大切です。")
+    ],
+    skills:["人と関わる","体を動かす","いろいろな仕事","丁寧さ"],
+    note:"仕事内容が幅広いため、実際の実習先ごとに必要な力は変わります。"
+  }
+};
+
+const taskImages = {"青果の袋詰め・パッキング": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiB2aWV3Qm94PSIwIDAgNzIwIDQyMCI+CjxyZWN0IHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiByeD0iMjgiIGZpbGw9IiNmOGZiZmYiLz4KPHJlY3QgeD0iMTgiIHk9IjE4IiB3aWR0aD0iNjg0IiBoZWlnaHQ9IjM4NCIgcng9IjI0IiBmaWxsPSIjZmZmZmZmIiBzdHJva2U9IiNkYmUxZWEiIHN0cm9rZS13aWR0aD0iMyIvPgo8Y2lyY2xlIGN4PSIxODAiIGN5PSIxODUiIHI9IjEwNSIgZmlsbD0iI2VlZjRmZiIvPgo8dGV4dCB4PSIxODAiIHk9IjIxMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSI4MiI+8J+lrDwvdGV4dD4KPHRleHQgeD0iMzYwIiB5PSIyMTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iNzYiPvCfjY48L3RleHQ+Cjx0ZXh0IHg9IjU0MCIgeT0iMjEwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9Ijc2Ij7wn5uN77iPPC90ZXh0Pgo8dGV4dCB4PSIzNjAiIHk9IjMyMiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLE5vdG8gU2FucyBKUCxzYW5zLXNlcmlmIiBmb250LXdlaWdodD0iNzAwIiBmb250LXNpemU9IjI5IiBmaWxsPSIjMWYyOTM3Ij7pnZLmnpzjga7ooovoqbDjgoHjg7vjg5Hjg4Pjgq3jg7PjgrA8L3RleHQ+Cjwvc3ZnPg==", "商品補充・陳列": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiB2aWV3Qm94PSIwIDAgNzIwIDQyMCI+CjxyZWN0IHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiByeD0iMjgiIGZpbGw9IiNmOGZiZmYiLz4KPHJlY3QgeD0iMTgiIHk9IjE4IiB3aWR0aD0iNjg0IiBoZWlnaHQ9IjM4NCIgcng9IjI0IiBmaWxsPSIjZmZmZmZmIiBzdHJva2U9IiNkYmUxZWEiIHN0cm9rZS13aWR0aD0iMyIvPgo8Y2lyY2xlIGN4PSIxODAiIGN5PSIxODUiIHI9IjEwNSIgZmlsbD0iI2VlZjRmZiIvPgo8dGV4dCB4PSIxODAiIHk9IjIxMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSI4MiI+8J+TpjwvdGV4dD4KPHRleHQgeD0iMzYwIiB5PSIyMTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iNzYiPuKeoe+4jzwvdGV4dD4KPHRleHQgeD0iNTQwIiB5PSIyMTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iNzYiPvCfm5I8L3RleHQ+Cjx0ZXh0IHg9IjM2MCIgeT0iMzIyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwsTm90byBTYW5zIEpQLHNhbnMtc2VyaWYiIGZvbnQtd2VpZ2h0PSI3MDAiIGZvbnQtc2l6ZT0iMjkiIGZpbGw9IiMxZjI5MzciPuWVhuWTgeijnOWFheODu+mZs+WIlzwvdGV4dD4KPC9zdmc+", "お総菜の製造": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiB2aWV3Qm94PSIwIDAgNzIwIDQyMCI+CjxyZWN0IHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiByeD0iMjgiIGZpbGw9IiNmOGZiZmYiLz4KPHJlY3QgeD0iMTgiIHk9IjE4IiB3aWR0aD0iNjg0IiBoZWlnaHQ9IjM4NCIgcng9IjI0IiBmaWxsPSIjZmZmZmZmIiBzdHJva2U9IiNkYmUxZWEiIHN0cm9rZS13aWR0aD0iMyIvPgo8Y2lyY2xlIGN4PSIxODAiIGN5PSIxODUiIHI9IjEwNSIgZmlsbD0iI2VlZjRmZiIvPgo8dGV4dCB4PSIxODAiIHk9IjIxMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSI4MiI+8J+NsTwvdGV4dD4KPHRleHQgeD0iMzYwIiB5PSIyMTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iNzYiPvCfpYQ8L3RleHQ+Cjx0ZXh0IHg9IjU0MCIgeT0iMjEwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9Ijc2Ij7wn5OmPC90ZXh0Pgo8dGV4dCB4PSIzNjAiIHk9IjMyMiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLE5vdG8gU2FucyBKUCxzYW5zLXNlcmlmIiBmb250LXdlaWdodD0iNzAwIiBmb250LXNpemU9IjI5IiBmaWxsPSIjMWYyOTM3Ij7jgYrnt4/oj5zjga7oo73pgKA8L3RleHQ+Cjwvc3ZnPg==", "伝票確認・数の照合": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiB2aWV3Qm94PSIwIDAgNzIwIDQyMCI+CjxyZWN0IHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiByeD0iMjgiIGZpbGw9IiNmOGZiZmYiLz4KPHJlY3QgeD0iMTgiIHk9IjE4IiB3aWR0aD0iNjg0IiBoZWlnaHQ9IjM4NCIgcng9IjI0IiBmaWxsPSIjZmZmZmZmIiBzdHJva2U9IiNkYmUxZWEiIHN0cm9rZS13aWR0aD0iMyIvPgo8Y2lyY2xlIGN4PSIxODAiIGN5PSIxODUiIHI9IjEwNSIgZmlsbD0iI2VlZjRmZiIvPgo8dGV4dCB4PSIxODAiIHk9IjIxMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSI4MiI+8J+ThDwvdGV4dD4KPHRleHQgeD0iMzYwIiB5PSIyMTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iNzYiPvCflKI8L3RleHQ+Cjx0ZXh0IHg9IjU0MCIgeT0iMjEwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9Ijc2Ij7inIU8L3RleHQ+Cjx0ZXh0IHg9IjM2MCIgeT0iMzIyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwsTm90byBTYW5zIEpQLHNhbnMtc2VyaWYiIGZvbnQtd2VpZ2h0PSI3MDAiIGZvbnQtc2l6ZT0iMjkiIGZpbGw9IiMxZjI5MzciPuS8neelqOeiuuiqjeODu+aVsOOBrueFp+WQiDwvdGV4dD4KPC9zdmc+", "開店準備": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiB2aWV3Qm94PSIwIDAgNzIwIDQyMCI+CjxyZWN0IHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiByeD0iMjgiIGZpbGw9IiNmOGZiZmYiLz4KPHJlY3QgeD0iMTgiIHk9IjE4IiB3aWR0aD0iNjg0IiBoZWlnaHQ9IjM4NCIgcng9IjI0IiBmaWxsPSIjZmZmZmZmIiBzdHJva2U9IiNkYmUxZWEiIHN0cm9rZS13aWR0aD0iMyIvPgo8Y2lyY2xlIGN4PSIxODAiIGN5PSIxODUiIHI9IjEwNSIgZmlsbD0iI2VlZjRmZiIvPgo8dGV4dCB4PSIxODAiIHk9IjIxMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSI4MiI+8J+bkjwvdGV4dD4KPHRleHQgeD0iMzYwIiB5PSIyMTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iNzYiPvCfp7k8L3RleHQ+Cjx0ZXh0IHg9IjU0MCIgeT0iMjEwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9Ijc2Ij7wn5qqPC90ZXh0Pgo8dGV4dCB4PSIzNjAiIHk9IjMyMiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLE5vdG8gU2FucyBKUCxzYW5zLXNlcmlmIiBmb250LXdlaWdodD0iNzAwIiBmb250LXNpemU9IjI5IiBmaWxsPSIjMWYyOTM3Ij7plovlupfmupblgpk8L3RleHQ+Cjwvc3ZnPg==", "店舗内外の清掃": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiB2aWV3Qm94PSIwIDAgNzIwIDQyMCI+CjxyZWN0IHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiByeD0iMjgiIGZpbGw9IiNmOGZiZmYiLz4KPHJlY3QgeD0iMTgiIHk9IjE4IiB3aWR0aD0iNjg0IiBoZWlnaHQ9IjM4NCIgcng9IjI0IiBmaWxsPSIjZmZmZmZmIiBzdHJva2U9IiNkYmUxZWEiIHN0cm9rZS13aWR0aD0iMyIvPgo8Y2lyY2xlIGN4PSIxODAiIGN5PSIxODUiIHI9IjEwNSIgZmlsbD0iI2VlZjRmZiIvPgo8dGV4dCB4PSIxODAiIHk9IjIxMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSI4MiI+8J+nuTwvdGV4dD4KPHRleHQgeD0iMzYwIiB5PSIyMTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iNzYiPvCfqqM8L3RleHQ+Cjx0ZXh0IHg9IjU0MCIgeT0iMjEwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9Ijc2Ij7inKg8L3RleHQ+Cjx0ZXh0IHg9IjM2MCIgeT0iMzIyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwsTm90byBTYW5zIEpQLHNhbnMtc2VyaWYiIGZvbnQtd2VpZ2h0PSI3MDAiIGZvbnQtc2l6ZT0iMjkiIGZpbGw9IiMxZjI5MzciPuW6l+iIl+WGheWkluOBrua4heaOgzwvdGV4dD4KPC9zdmc+", "レジ補助（袋詰め）": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiB2aWV3Qm94PSIwIDAgNzIwIDQyMCI+CjxyZWN0IHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiByeD0iMjgiIGZpbGw9IiNmOGZiZmYiLz4KPHJlY3QgeD0iMTgiIHk9IjE4IiB3aWR0aD0iNjg0IiBoZWlnaHQ9IjM4NCIgcng9IjI0IiBmaWxsPSIjZmZmZmZmIiBzdHJva2U9IiNkYmUxZWEiIHN0cm9rZS13aWR0aD0iMyIvPgo8Y2lyY2xlIGN4PSIxODAiIGN5PSIxODUiIHI9IjEwNSIgZmlsbD0iI2VlZjRmZiIvPgo8dGV4dCB4PSIxODAiIHk9IjIxMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSI4MiI+8J+nvjwvdGV4dD4KPHRleHQgeD0iMzYwIiB5PSIyMTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iNzYiPvCfm43vuI88L3RleHQ+Cjx0ZXh0IHg9IjU0MCIgeT0iMjEwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9Ijc2Ij7wn6WrPC90ZXh0Pgo8dGV4dCB4PSIzNjAiIHk9IjMyMiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLE5vdG8gU2FucyBKUCxzYW5zLXNlcmlmIiBmb250LXdlaWdodD0iNzAwIiBmb250LXNpemU9IjI5IiBmaWxsPSIjMWYyOTM3Ij7jg6zjgrjoo5zliqnvvIjooovoqbDjgoHvvIk8L3RleHQ+Cjwvc3ZnPg==", "衣類のたたみ・ハンガーがけ": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiB2aWV3Qm94PSIwIDAgNzIwIDQyMCI+CjxyZWN0IHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiByeD0iMjgiIGZpbGw9IiNmOGZiZmYiLz4KPHJlY3QgeD0iMTgiIHk9IjE4IiB3aWR0aD0iNjg0IiBoZWlnaHQ9IjM4NCIgcng9IjI0IiBmaWxsPSIjZmZmZmZmIiBzdHJva2U9IiNkYmUxZWEiIHN0cm9rZS13aWR0aD0iMyIvPgo8Y2lyY2xlIGN4PSIxODAiIGN5PSIxODUiIHI9IjEwNSIgZmlsbD0iI2VlZjRmZiIvPgo8dGV4dCB4PSIxODAiIHk9IjIxMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSI4MiI+8J+RlTwvdGV4dD4KPHRleHQgeD0iMzYwIiB5PSIyMTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iNzYiPvCfp7o8L3RleHQ+Cjx0ZXh0IHg9IjU0MCIgeT0iMjEwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9Ijc2Ij7wn6elPC90ZXh0Pgo8dGV4dCB4PSIzNjAiIHk9IjMyMiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLE5vdG8gU2FucyBKUCxzYW5zLXNlcmlmIiBmb250LXdlaWdodD0iNzAwIiBmb250LXNpemU9IjI5IiBmaWxsPSIjMWYyOTM3Ij7ooaPpoZ7jga7jgZ/jgZ/jgb/jg7vjg4/jg7Pjgqzjg7zjgYzjgZE8L3RleHQ+Cjwvc3ZnPg==", "お客様対応": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiB2aWV3Qm94PSIwIDAgNzIwIDQyMCI+CjxyZWN0IHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiByeD0iMjgiIGZpbGw9IiNmOGZiZmYiLz4KPHJlY3QgeD0iMTgiIHk9IjE4IiB3aWR0aD0iNjg0IiBoZWlnaHQ9IjM4NCIgcng9IjI0IiBmaWxsPSIjZmZmZmZmIiBzdHJva2U9IiNkYmUxZWEiIHN0cm9rZS13aWR0aD0iMyIvPgo8Y2lyY2xlIGN4PSIxODAiIGN5PSIxODUiIHI9IjEwNSIgZmlsbD0iI2VlZjRmZiIvPgo8dGV4dCB4PSIxODAiIHk9IjIxMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSI4MiI+8J+nkTwvdGV4dD4KPHRleHQgeD0iMzYwIiB5PSIyMTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iNzYiPvCfkqw8L3RleHQ+Cjx0ZXh0IHg9IjU0MCIgeT0iMjEwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9Ijc2Ij7wn4+sPC90ZXh0Pgo8dGV4dCB4PSIzNjAiIHk9IjMyMiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLE5vdG8gU2FucyBKUCxzYW5zLXNlcmlmIiBmb250LXdlaWdodD0iNzAwIiBmb250LXNpemU9IjI5IiBmaWxsPSIjMWYyOTM3Ij7jgYrlrqLmp5jlr77lv5w8L3RleHQ+Cjwvc3ZnPg==", "食器洗浄": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiB2aWV3Qm94PSIwIDAgNzIwIDQyMCI+CjxyZWN0IHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiByeD0iMjgiIGZpbGw9IiNmOGZiZmYiLz4KPHJlY3QgeD0iMTgiIHk9IjE4IiB3aWR0aD0iNjg0IiBoZWlnaHQ9IjM4NCIgcng9IjI0IiBmaWxsPSIjZmZmZmZmIiBzdHJva2U9IiNkYmUxZWEiIHN0cm9rZS13aWR0aD0iMyIvPgo8Y2lyY2xlIGN4PSIxODAiIGN5PSIxODUiIHI9IjEwNSIgZmlsbD0iI2VlZjRmZiIvPgo8dGV4dCB4PSIxODAiIHk9IjIxMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSI4MiI+8J+Nve+4jzwvdGV4dD4KPHRleHQgeD0iMzYwIiB5PSIyMTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iNzYiPvCfp708L3RleHQ+Cjx0ZXh0IHg9IjU0MCIgeT0iMjEwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9Ijc2Ij7inKg8L3RleHQ+Cjx0ZXh0IHg9IjM2MCIgeT0iMzIyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwsTm90byBTYW5zIEpQLHNhbnMtc2VyaWYiIGZvbnQtd2VpZ2h0PSI3MDAiIGZvbnQtc2l6ZT0iMjkiIGZpbGw9IiMxZjI5MzciPumjn+WZqOa0l+a1hDwvdGV4dD4KPC9zdmc+", "調理補助（計量・皿だし・盛り付けなど）": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiB2aWV3Qm94PSIwIDAgNzIwIDQyMCI+CjxyZWN0IHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiByeD0iMjgiIGZpbGw9IiNmOGZiZmYiLz4KPHJlY3QgeD0iMTgiIHk9IjE4IiB3aWR0aD0iNjg0IiBoZWlnaHQ9IjM4NCIgcng9IjI0IiBmaWxsPSIjZmZmZmZmIiBzdHJva2U9IiNkYmUxZWEiIHN0cm9rZS13aWR0aD0iMyIvPgo8Y2lyY2xlIGN4PSIxODAiIGN5PSIxODUiIHI9IjEwNSIgZmlsbD0iI2VlZjRmZiIvPgo8dGV4dCB4PSIxODAiIHk9IjIxMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSI4MiI+4pqW77iPPC90ZXh0Pgo8dGV4dCB4PSIzNjAiIHk9IjIxMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSI3NiI+8J+llzwvdGV4dD4KPHRleHQgeD0iNTQwIiB5PSIyMTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iNzYiPvCfjb3vuI88L3RleHQ+Cjx0ZXh0IHg9IjM2MCIgeT0iMzIyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwsTm90byBTYW5zIEpQLHNhbnMtc2VyaWYiIGZvbnQtd2VpZ2h0PSI3MDAiIGZvbnQtc2l6ZT0iMjkiIGZpbGw9IiMxZjI5MzciPuiqv+eQhuijnOWKqe+8iOioiOmHj+ODu+eav+OBoOOBl+ODu+ebm+OCiuS7mOOBkeOBquOBqe+8iTwvdGV4dD4KPC9zdmc+", "開店前の仕込み": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiB2aWV3Qm94PSIwIDAgNzIwIDQyMCI+CjxyZWN0IHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiByeD0iMjgiIGZpbGw9IiNmOGZiZmYiLz4KPHJlY3QgeD0iMTgiIHk9IjE4IiB3aWR0aD0iNjg0IiBoZWlnaHQ9IjM4NCIgcng9IjI0IiBmaWxsPSIjZmZmZmZmIiBzdHJva2U9IiNkYmUxZWEiIHN0cm9rZS13aWR0aD0iMyIvPgo8Y2lyY2xlIGN4PSIxODAiIGN5PSIxODUiIHI9IjEwNSIgZmlsbD0iI2VlZjRmZiIvPgo8dGV4dCB4PSIxODAiIHk9IjIxMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSI4MiI+8J+llTwvdGV4dD4KPHRleHQgeD0iMzYwIiB5PSIyMTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iNzYiPvCflKo8L3RleHQ+Cjx0ZXh0IHg9IjU0MCIgeT0iMjEwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9Ijc2Ij7wn6WjPC90ZXh0Pgo8dGV4dCB4PSIzNjAiIHk9IjMyMiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLE5vdG8gU2FucyBKUCxzYW5zLXNlcmlmIiBmb250LXdlaWdodD0iNzAwIiBmb250LXNpemU9IjI5IiBmaWxsPSIjMWYyOTM3Ij7plovlupfliY3jga7ku5Xovrzjgb88L3RleHQ+Cjwvc3ZnPg==", "お客様への商品提供": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiB2aWV3Qm94PSIwIDAgNzIwIDQyMCI+CjxyZWN0IHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiByeD0iMjgiIGZpbGw9IiNmOGZiZmYiLz4KPHJlY3QgeD0iMTgiIHk9IjE4IiB3aWR0aD0iNjg0IiBoZWlnaHQ9IjM4NCIgcng9IjI0IiBmaWxsPSIjZmZmZmZmIiBzdHJva2U9IiNkYmUxZWEiIHN0cm9rZS13aWR0aD0iMyIvPgo8Y2lyY2xlIGN4PSIxODAiIGN5PSIxODUiIHI9IjEwNSIgZmlsbD0iI2VlZjRmZiIvPgo8dGV4dCB4PSIxODAiIHk9IjIxMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSI4MiI+8J+Nve+4jzwvdGV4dD4KPHRleHQgeD0iMzYwIiB5PSIyMTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iNzYiPuKeoe+4jzwvdGV4dD4KPHRleHQgeD0iNTQwIiB5PSIyMTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iNzYiPvCfp5E8L3RleHQ+Cjx0ZXh0IHg9IjM2MCIgeT0iMzIyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwsTm90byBTYW5zIEpQLHNhbnMtc2VyaWYiIGZvbnQtd2VpZ2h0PSI3MDAiIGZvbnQtc2l6ZT0iMjkiIGZpbGw9IiMxZjI5MzciPuOBiuWuouanmOOBuOOBruWVhuWTgeaPkOS+mzwvdGV4dD4KPC9zdmc+", "大小さまざまな荷物の運搬": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiB2aWV3Qm94PSIwIDAgNzIwIDQyMCI+CjxyZWN0IHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiByeD0iMjgiIGZpbGw9IiNmOGZiZmYiLz4KPHJlY3QgeD0iMTgiIHk9IjE4IiB3aWR0aD0iNjg0IiBoZWlnaHQ9IjM4NCIgcng9IjI0IiBmaWxsPSIjZmZmZmZmIiBzdHJva2U9IiNkYmUxZWEiIHN0cm9rZS13aWR0aD0iMyIvPgo8Y2lyY2xlIGN4PSIxODAiIGN5PSIxODUiIHI9IjEwNSIgZmlsbD0iI2VlZjRmZiIvPgo8dGV4dCB4PSIxODAiIHk9IjIxMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSI4MiI+8J+TpjwvdGV4dD4KPHRleHQgeD0iMzYwIiB5PSIyMTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iNzYiPvCfm5I8L3RleHQ+Cjx0ZXh0IHg9IjU0MCIgeT0iMjEwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9Ijc2Ij7inqHvuI88L3RleHQ+Cjx0ZXh0IHg9IjM2MCIgeT0iMzIyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwsTm90byBTYW5zIEpQLHNhbnMtc2VyaWYiIGZvbnQtd2VpZ2h0PSI3MDAiIGZvbnQtc2l6ZT0iMjkiIGZpbGw9IiMxZjI5MzciPuWkp+Wwj+OBleOBvuOBluOBvuOBquiNt+eJqeOBrumBi+aQrDwvdGV4dD4KPC9zdmc+", "カートの運搬・清掃": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiB2aWV3Qm94PSIwIDAgNzIwIDQyMCI+CjxyZWN0IHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiByeD0iMjgiIGZpbGw9IiNmOGZiZmYiLz4KPHJlY3QgeD0iMTgiIHk9IjE4IiB3aWR0aD0iNjg0IiBoZWlnaHQ9IjM4NCIgcng9IjI0IiBmaWxsPSIjZmZmZmZmIiBzdHJva2U9IiNkYmUxZWEiIHN0cm9rZS13aWR0aD0iMyIvPgo8Y2lyY2xlIGN4PSIxODAiIGN5PSIxODUiIHI9IjEwNSIgZmlsbD0iI2VlZjRmZiIvPgo8dGV4dCB4PSIxODAiIHk9IjIxMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSI4MiI+8J+bkjwvdGV4dD4KPHRleHQgeD0iMzYwIiB5PSIyMTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iNzYiPvCfp708L3RleHQ+Cjx0ZXh0IHg9IjU0MCIgeT0iMjEwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9Ijc2Ij7inKg8L3RleHQ+Cjx0ZXh0IHg9IjM2MCIgeT0iMzIyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwsTm90byBTYW5zIEpQLHNhbnMtc2VyaWYiIGZvbnQtd2VpZ2h0PSI3MDAiIGZvbnQtc2l6ZT0iMjkiIGZpbGw9IiMxZjI5MzciPuOCq+ODvOODiOOBrumBi+aQrOODu+a4heaOgzwvdGV4dD4KPC9zdmc+", "伝票整理": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiB2aWV3Qm94PSIwIDAgNzIwIDQyMCI+CjxyZWN0IHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiByeD0iMjgiIGZpbGw9IiNmOGZiZmYiLz4KPHJlY3QgeD0iMTgiIHk9IjE4IiB3aWR0aD0iNjg0IiBoZWlnaHQ9IjM4NCIgcng9IjI0IiBmaWxsPSIjZmZmZmZmIiBzdHJva2U9IiNkYmUxZWEiIHN0cm9rZS13aWR0aD0iMyIvPgo8Y2lyY2xlIGN4PSIxODAiIGN5PSIxODUiIHI9IjEwNSIgZmlsbD0iI2VlZjRmZiIvPgo8dGV4dCB4PSIxODAiIHk9IjIxMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSI4MiI+8J+ThDwvdGV4dD4KPHRleHQgeD0iMzYwIiB5PSIyMTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iNzYiPvCfk5o8L3RleHQ+Cjx0ZXh0IHg9IjU0MCIgeT0iMjEwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9Ijc2Ij7inIU8L3RleHQ+Cjx0ZXh0IHg9IjM2MCIgeT0iMzIyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwsTm90byBTYW5zIEpQLHNhbnMtc2VyaWYiIGZvbnQtd2VpZ2h0PSI3MDAiIGZvbnQtc2l6ZT0iMjkiIGZpbGw9IiMxZjI5MzciPuS8neelqOaVtOeQhjwvdGV4dD4KPC9zdmc+", "郵便物の仕分け": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiB2aWV3Qm94PSIwIDAgNzIwIDQyMCI+CjxyZWN0IHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiByeD0iMjgiIGZpbGw9IiNmOGZiZmYiLz4KPHJlY3QgeD0iMTgiIHk9IjE4IiB3aWR0aD0iNjg0IiBoZWlnaHQ9IjM4NCIgcng9IjI0IiBmaWxsPSIjZmZmZmZmIiBzdHJva2U9IiNkYmUxZWEiIHN0cm9rZS13aWR0aD0iMyIvPgo8Y2lyY2xlIGN4PSIxODAiIGN5PSIxODUiIHI9IjEwNSIgZmlsbD0iI2VlZjRmZiIvPgo8dGV4dCB4PSIxODAiIHk9IjIxMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSI4MiI+4pyJ77iPPC90ZXh0Pgo8dGV4dCB4PSIzNjAiIHk9IjIxMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSI3NiI+8J+TrDwvdGV4dD4KPHRleHQgeD0iNTQwIiB5PSIyMTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iNzYiPuKGlO+4jzwvdGV4dD4KPHRleHQgeD0iMzYwIiB5PSIzMjIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCxOb3RvIFNhbnMgSlAsc2Fucy1zZXJpZiIgZm9udC13ZWlnaHQ9IjcwMCIgZm9udC1zaXplPSIyOSIgZmlsbD0iIzFmMjkzNyI+6YO15L6/54mp44Gu5LuV5YiG44GRPC90ZXh0Pgo8L3N2Zz4=", "ピッキング": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiB2aWV3Qm94PSIwIDAgNzIwIDQyMCI+CjxyZWN0IHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiByeD0iMjgiIGZpbGw9IiNmOGZiZmYiLz4KPHJlY3QgeD0iMTgiIHk9IjE4IiB3aWR0aD0iNjg0IiBoZWlnaHQ9IjM4NCIgcng9IjI0IiBmaWxsPSIjZmZmZmZmIiBzdHJva2U9IiNkYmUxZWEiIHN0cm9rZS13aWR0aD0iMyIvPgo8Y2lyY2xlIGN4PSIxODAiIGN5PSIxODUiIHI9IjEwNSIgZmlsbD0iI2VlZjRmZiIvPgo8dGV4dCB4PSIxODAiIHk9IjIxMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSI4MiI+8J+TizwvdGV4dD4KPHRleHQgeD0iMzYwIiB5PSIyMTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iNzYiPvCfk6Y8L3RleHQ+Cjx0ZXh0IHg9IjU0MCIgeT0iMjEwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9Ijc2Ij7wn5uSPC90ZXh0Pgo8dGV4dCB4PSIzNjAiIHk9IjMyMiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLE5vdG8gU2FucyBKUCxzYW5zLXNlcmlmIiBmb250LXdlaWdodD0iNzAwIiBmb250LXNpemU9IjI5IiBmaWxsPSIjMWYyOTM3Ij7jg5Tjg4Pjgq3jg7PjgrA8L3RleHQ+Cjwvc3ZnPg==", "荷受け": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiB2aWV3Qm94PSIwIDAgNzIwIDQyMCI+CjxyZWN0IHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiByeD0iMjgiIGZpbGw9IiNmOGZiZmYiLz4KPHJlY3QgeD0iMTgiIHk9IjE4IiB3aWR0aD0iNjg0IiBoZWlnaHQ9IjM4NCIgcng9IjI0IiBmaWxsPSIjZmZmZmZmIiBzdHJva2U9IiNkYmUxZWEiIHN0cm9rZS13aWR0aD0iMyIvPgo8Y2lyY2xlIGN4PSIxODAiIGN5PSIxODUiIHI9IjEwNSIgZmlsbD0iI2VlZjRmZiIvPgo8dGV4dCB4PSIxODAiIHk9IjIxMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSI4MiI+8J+amjwvdGV4dD4KPHRleHQgeD0iMzYwIiB5PSIyMTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iNzYiPvCfk6Y8L3RleHQ+Cjx0ZXh0IHg9IjU0MCIgeT0iMjEwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9Ijc2Ij7inIU8L3RleHQ+Cjx0ZXh0IHg9IjM2MCIgeT0iMzIyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwsTm90byBTYW5zIEpQLHNhbnMtc2VyaWYiIGZvbnQtd2VpZ2h0PSI3MDAiIGZvbnQtc2l6ZT0iMjkiIGZpbGw9IiMxZjI5MzciPuiNt+WPl+OBkTwvdGV4dD4KPC9zdmc+", "出庫準備": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiB2aWV3Qm94PSIwIDAgNzIwIDQyMCI+CjxyZWN0IHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiByeD0iMjgiIGZpbGw9IiNmOGZiZmYiLz4KPHJlY3QgeD0iMTgiIHk9IjE4IiB3aWR0aD0iNjg0IiBoZWlnaHQ9IjM4NCIgcng9IjI0IiBmaWxsPSIjZmZmZmZmIiBzdHJva2U9IiNkYmUxZWEiIHN0cm9rZS13aWR0aD0iMyIvPgo8Y2lyY2xlIGN4PSIxODAiIGN5PSIxODUiIHI9IjEwNSIgZmlsbD0iI2VlZjRmZiIvPgo8dGV4dCB4PSIxODAiIHk9IjIxMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSI4MiI+8J+TpjwvdGV4dD4KPHRleHQgeD0iMzYwIiB5PSIyMTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iNzYiPvCfj7fvuI88L3RleHQ+Cjx0ZXh0IHg9IjU0MCIgeT0iMjEwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9Ijc2Ij7wn5qaPC90ZXh0Pgo8dGV4dCB4PSIzNjAiIHk9IjMyMiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLE5vdG8gU2FucyBKUCxzYW5zLXNlcmlmIiBmb250LXdlaWdodD0iNzAwIiBmb250LXNpemU9IjI5IiBmaWxsPSIjMWYyOTM3Ij7lh7rluqvmupblgpk8L3RleHQ+Cjwvc3ZnPg==", "文書のPDF化": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiB2aWV3Qm94PSIwIDAgNzIwIDQyMCI+CjxyZWN0IHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiByeD0iMjgiIGZpbGw9IiNmOGZiZmYiLz4KPHJlY3QgeD0iMTgiIHk9IjE4IiB3aWR0aD0iNjg0IiBoZWlnaHQ9IjM4NCIgcng9IjI0IiBmaWxsPSIjZmZmZmZmIiBzdHJva2U9IiNkYmUxZWEiIHN0cm9rZS13aWR0aD0iMyIvPgo8Y2lyY2xlIGN4PSIxODAiIGN5PSIxODUiIHI9IjEwNSIgZmlsbD0iI2VlZjRmZiIvPgo8dGV4dCB4PSIxODAiIHk9IjIxMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSI4MiI+8J+ThDwvdGV4dD4KPHRleHQgeD0iMzYwIiB5PSIyMTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iNzYiPvCflqjvuI88L3RleHQ+Cjx0ZXh0IHg9IjU0MCIgeT0iMjEwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9Ijc2Ij7wn5K7PC90ZXh0Pgo8dGV4dCB4PSIzNjAiIHk9IjMyMiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLE5vdG8gU2FucyBKUCxzYW5zLXNlcmlmIiBmb250LXdlaWdodD0iNzAwIiBmb250LXNpemU9IjI5IiBmaWxsPSIjMWYyOTM3Ij7mlofmm7jjga5QREbljJY8L3RleHQ+Cjwvc3ZnPg==", "スキャン": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiB2aWV3Qm94PSIwIDAgNzIwIDQyMCI+CjxyZWN0IHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiByeD0iMjgiIGZpbGw9IiNmOGZiZmYiLz4KPHJlY3QgeD0iMTgiIHk9IjE4IiB3aWR0aD0iNjg0IiBoZWlnaHQ9IjM4NCIgcng9IjI0IiBmaWxsPSIjZmZmZmZmIiBzdHJva2U9IiNkYmUxZWEiIHN0cm9rZS13aWR0aD0iMyIvPgo8Y2lyY2xlIGN4PSIxODAiIGN5PSIxODUiIHI9IjEwNSIgZmlsbD0iI2VlZjRmZiIvPgo8dGV4dCB4PSIxODAiIHk9IjIxMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSI4MiI+8J+ThDwvdGV4dD4KPHRleHQgeD0iMzYwIiB5PSIyMTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iNzYiPvCflI08L3RleHQ+Cjx0ZXh0IHg9IjU0MCIgeT0iMjEwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9Ijc2Ij7wn5K7PC90ZXh0Pgo8dGV4dCB4PSIzNjAiIHk9IjMyMiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLE5vdG8gU2FucyBKUCxzYW5zLXNlcmlmIiBmb250LXdlaWdodD0iNzAwIiBmb250LXNpemU9IjI5IiBmaWxsPSIjMWYyOTM3Ij7jgrnjgq3jg6Pjg7M8L3RleHQ+Cjwvc3ZnPg==", "PC内の適切なフォルダへの仕分け": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiB2aWV3Qm94PSIwIDAgNzIwIDQyMCI+CjxyZWN0IHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiByeD0iMjgiIGZpbGw9IiNmOGZiZmYiLz4KPHJlY3QgeD0iMTgiIHk9IjE4IiB3aWR0aD0iNjg0IiBoZWlnaHQ9IjM4NCIgcng9IjI0IiBmaWxsPSIjZmZmZmZmIiBzdHJva2U9IiNkYmUxZWEiIHN0cm9rZS13aWR0aD0iMyIvPgo8Y2lyY2xlIGN4PSIxODAiIGN5PSIxODUiIHI9IjEwNSIgZmlsbD0iI2VlZjRmZiIvPgo8dGV4dCB4PSIxODAiIHk9IjIxMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSI4MiI+8J+SuzwvdGV4dD4KPHRleHQgeD0iMzYwIiB5PSIyMTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iNzYiPvCfk4E8L3RleHQ+Cjx0ZXh0IHg9IjU0MCIgeT0iMjEwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9Ijc2Ij7inqHvuI88L3RleHQ+Cjx0ZXh0IHg9IjM2MCIgeT0iMzIyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwsTm90byBTYW5zIEpQLHNhbnMtc2VyaWYiIGZvbnQtd2VpZ2h0PSI3MDAiIGZvbnQtc2l6ZT0iMjkiIGZpbGw9IiMxZjI5MzciPlBD5YaF44Gu6YGp5YiH44Gq44OV44Kp44Or44OA44G444Gu5LuV5YiG44GRPC90ZXh0Pgo8L3N2Zz4=", "社内メール便の仕分け": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiB2aWV3Qm94PSIwIDAgNzIwIDQyMCI+CjxyZWN0IHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiByeD0iMjgiIGZpbGw9IiNmOGZiZmYiLz4KPHJlY3QgeD0iMTgiIHk9IjE4IiB3aWR0aD0iNjg0IiBoZWlnaHQ9IjM4NCIgcng9IjI0IiBmaWxsPSIjZmZmZmZmIiBzdHJva2U9IiNkYmUxZWEiIHN0cm9rZS13aWR0aD0iMyIvPgo8Y2lyY2xlIGN4PSIxODAiIGN5PSIxODUiIHI9IjEwNSIgZmlsbD0iI2VlZjRmZiIvPgo8dGV4dCB4PSIxODAiIHk9IjIxMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSI4MiI+4pyJ77iPPC90ZXh0Pgo8dGV4dCB4PSIzNjAiIHk9IjIxMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSI3NiI+8J+PojwvdGV4dD4KPHRleHQgeD0iNTQwIiB5PSIyMTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iNzYiPvCfk6w8L3RleHQ+Cjx0ZXh0IHg9IjM2MCIgeT0iMzIyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwsTm90byBTYW5zIEpQLHNhbnMtc2VyaWYiIGZvbnQtd2VpZ2h0PSI3MDAiIGZvbnQtc2l6ZT0iMjkiIGZpbGw9IiMxZjI5MzciPuekvuWGheODoeODvOODq+S+v+OBruS7leWIhuOBkTwvdGV4dD4KPC9zdmc+", "資料の丁合（ホチキス止め・のりづけ等）": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiB2aWV3Qm94PSIwIDAgNzIwIDQyMCI+CjxyZWN0IHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiByeD0iMjgiIGZpbGw9IiNmOGZiZmYiLz4KPHJlY3QgeD0iMTgiIHk9IjE4IiB3aWR0aD0iNjg0IiBoZWlnaHQ9IjM4NCIgcng9IjI0IiBmaWxsPSIjZmZmZmZmIiBzdHJva2U9IiNkYmUxZWEiIHN0cm9rZS13aWR0aD0iMyIvPgo8Y2lyY2xlIGN4PSIxODAiIGN5PSIxODUiIHI9IjEwNSIgZmlsbD0iI2VlZjRmZiIvPgo8dGV4dCB4PSIxODAiIHk9IjIxMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSI4MiI+8J+ThDwvdGV4dD4KPHRleHQgeD0iMzYwIiB5PSIyMTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iNzYiPvCfk5E8L3RleHQ+Cjx0ZXh0IHg9IjU0MCIgeT0iMjEwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9Ijc2Ij7wn5OOPC90ZXh0Pgo8dGV4dCB4PSIzNjAiIHk9IjMyMiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLE5vdG8gU2FucyBKUCxzYW5zLXNlcmlmIiBmb250LXdlaWdodD0iNzAwIiBmb250LXNpemU9IjI5IiBmaWxsPSIjMWYyOTM3Ij7os4fmlpnjga7kuIHlkIjvvIjjg5vjg4Hjgq3jgrnmraLjgoHjg7vjga7jgorjgaXjgZHnrYnvvIk8L3RleHQ+Cjwvc3ZnPg==", "資料発送準備": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiB2aWV3Qm94PSIwIDAgNzIwIDQyMCI+CjxyZWN0IHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiByeD0iMjgiIGZpbGw9IiNmOGZiZmYiLz4KPHJlY3QgeD0iMTgiIHk9IjE4IiB3aWR0aD0iNjg0IiBoZWlnaHQ9IjM4NCIgcng9IjI0IiBmaWxsPSIjZmZmZmZmIiBzdHJva2U9IiNkYmUxZWEiIHN0cm9rZS13aWR0aD0iMyIvPgo8Y2lyY2xlIGN4PSIxODAiIGN5PSIxODUiIHI9IjEwNSIgZmlsbD0iI2VlZjRmZiIvPgo8dGV4dCB4PSIxODAiIHk9IjIxMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSI4MiI+8J+ThDwvdGV4dD4KPHRleHQgeD0iMzYwIiB5PSIyMTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iNzYiPuKcie+4jzwvdGV4dD4KPHRleHQgeD0iNTQwIiB5PSIyMTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iNzYiPvCfj7fvuI88L3RleHQ+Cjx0ZXh0IHg9IjM2MCIgeT0iMzIyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwsTm90byBTYW5zIEpQLHNhbnMtc2VyaWYiIGZvbnQtd2VpZ2h0PSI3MDAiIGZvbnQtc2l6ZT0iMjkiIGZpbGw9IiMxZjI5MzciPuizh+aWmeeZuumAgea6luWCmTwvdGV4dD4KPC9zdmc+", "シュレッダー": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiB2aWV3Qm94PSIwIDAgNzIwIDQyMCI+CjxyZWN0IHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiByeD0iMjgiIGZpbGw9IiNmOGZiZmYiLz4KPHJlY3QgeD0iMTgiIHk9IjE4IiB3aWR0aD0iNjg0IiBoZWlnaHQ9IjM4NCIgcng9IjI0IiBmaWxsPSIjZmZmZmZmIiBzdHJva2U9IiNkYmUxZWEiIHN0cm9rZS13aWR0aD0iMyIvPgo8Y2lyY2xlIGN4PSIxODAiIGN5PSIxODUiIHI9IjEwNSIgZmlsbD0iI2VlZjRmZiIvPgo8dGV4dCB4PSIxODAiIHk9IjIxMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSI4MiI+8J+ThDwvdGV4dD4KPHRleHQgeD0iMzYwIiB5PSIyMTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iNzYiPuKame+4jzwvdGV4dD4KPHRleHQgeD0iNTQwIiB5PSIyMTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iNzYiPvCfl5HvuI88L3RleHQ+Cjx0ZXh0IHg9IjM2MCIgeT0iMzIyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwsTm90byBTYW5zIEpQLHNhbnMtc2VyaWYiIGZvbnQtd2VpZ2h0PSI3MDAiIGZvbnQtc2l6ZT0iMjkiIGZpbGw9IiMxZjI5MzciPuOCt+ODpeODrOODg+ODgOODvDwvdGV4dD4KPC9zdmc+", "コピー用紙補充": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiB2aWV3Qm94PSIwIDAgNzIwIDQyMCI+CjxyZWN0IHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiByeD0iMjgiIGZpbGw9IiNmOGZiZmYiLz4KPHJlY3QgeD0iMTgiIHk9IjE4IiB3aWR0aD0iNjg0IiBoZWlnaHQ9IjM4NCIgcng9IjI0IiBmaWxsPSIjZmZmZmZmIiBzdHJva2U9IiNkYmUxZWEiIHN0cm9rZS13aWR0aD0iMyIvPgo8Y2lyY2xlIGN4PSIxODAiIGN5PSIxODUiIHI9IjEwNSIgZmlsbD0iI2VlZjRmZiIvPgo8dGV4dCB4PSIxODAiIHk9IjIxMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSI4MiI+8J+ThDwvdGV4dD4KPHRleHQgeD0iMzYwIiB5PSIyMTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iNzYiPvCflqjvuI88L3RleHQ+Cjx0ZXh0IHg9IjU0MCIgeT0iMjEwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9Ijc2Ij7inpU8L3RleHQ+Cjx0ZXh0IHg9IjM2MCIgeT0iMzIyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwsTm90byBTYW5zIEpQLHNhbnMtc2VyaWYiIGZvbnQtd2VpZ2h0PSI3MDAiIGZvbnQtc2l6ZT0iMjkiIGZpbGw9IiMxZjI5MzciPuOCs+ODlOODvOeUqOe0meijnOWFhTwvdGV4dD4KPC9zdmc+", "共有部分の清掃（廊下・階段・ホール・トイレ・会議スペース・休憩スペースなど）": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiB2aWV3Qm94PSIwIDAgNzIwIDQyMCI+CjxyZWN0IHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiByeD0iMjgiIGZpbGw9IiNmOGZiZmYiLz4KPHJlY3QgeD0iMTgiIHk9IjE4IiB3aWR0aD0iNjg0IiBoZWlnaHQ9IjM4NCIgcng9IjI0IiBmaWxsPSIjZmZmZmZmIiBzdHJva2U9IiNkYmUxZWEiIHN0cm9rZS13aWR0aD0iMyIvPgo8Y2lyY2xlIGN4PSIxODAiIGN5PSIxODUiIHI9IjEwNSIgZmlsbD0iI2VlZjRmZiIvPgo8dGV4dCB4PSIxODAiIHk9IjIxMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSI4MiI+8J+nuTwvdGV4dD4KPHRleHQgeD0iMzYwIiB5PSIyMTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iNzYiPvCfqqM8L3RleHQ+Cjx0ZXh0IHg9IjU0MCIgeT0iMjEwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9Ijc2Ij7wn4+iPC90ZXh0Pgo8dGV4dCB4PSIzNjAiIHk9IjMyMiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLE5vdG8gU2FucyBKUCxzYW5zLXNlcmlmIiBmb250LXdlaWdodD0iNzAwIiBmb250LXNpemU9IjI5IiBmaWxsPSIjMWYyOTM3Ij7lhbHmnInpg6jliIbjga7muIXmjoPvvIjlu4rkuIvjg7vpmo7mrrXjg7vjg5vjg7zjg6vjg7vjg4jjgqTjg6zjg7vkvJrorbA8L3RleHQ+Cjx0ZXh0IHg9IjM2MCIgeT0iMzYwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwsTm90byBTYW5zIEpQLHNhbnMtc2VyaWYiIGZvbnQtd2VpZ2h0PSI3MDAiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiMxZjI5MzciPuOCueODmuODvOOCueODu+S8keaGqeOCueODmuODvOOCueOBquOBqe+8iTwvdGV4dD48L3N2Zz4=", "建物外回りの環境整備（除草・落ち葉回収・ゴミ回収・花壇等の整備）": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiB2aWV3Qm94PSIwIDAgNzIwIDQyMCI+CjxyZWN0IHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiByeD0iMjgiIGZpbGw9IiNmOGZiZmYiLz4KPHJlY3QgeD0iMTgiIHk9IjE4IiB3aWR0aD0iNjg0IiBoZWlnaHQ9IjM4NCIgcng9IjI0IiBmaWxsPSIjZmZmZmZmIiBzdHJva2U9IiNkYmUxZWEiIHN0cm9rZS13aWR0aD0iMyIvPgo8Y2lyY2xlIGN4PSIxODAiIGN5PSIxODUiIHI9IjEwNSIgZmlsbD0iI2VlZjRmZiIvPgo8dGV4dCB4PSIxODAiIHk9IjIxMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSI4MiI+8J+MvzwvdGV4dD4KPHRleHQgeD0iMzYwIiB5PSIyMTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iNzYiPvCfjYI8L3RleHQ+Cjx0ZXh0IHg9IjU0MCIgeT0iMjEwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9Ijc2Ij7wn6e5PC90ZXh0Pgo8dGV4dCB4PSIzNjAiIHk9IjMyMiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLE5vdG8gU2FucyBKUCxzYW5zLXNlcmlmIiBmb250LXdlaWdodD0iNzAwIiBmb250LXNpemU9IjI5IiBmaWxsPSIjMWYyOTM3Ij7lu7rnianlpJblm57jgorjga7nkrDlooPmlbTlgpnvvIjpmaTojYnjg7vokL3jgaHokYnlm57lj47jg7vjgrTjg5/lm57lj448L3RleHQ+Cjx0ZXh0IHg9IjM2MCIgeT0iMzYwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwsTm90byBTYW5zIEpQLHNhbnMtc2VyaWYiIGZvbnQtd2VpZ2h0PSI3MDAiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiMxZjI5MzciPuODu+iKseWjh+etieOBruaVtOWCme+8iTwvdGV4dD48L3N2Zz4=", "ラインに入っての食品製造（弁当具材置き・サンドイッチ製造・容器のフタ取り付け・箱詰め等）": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiB2aWV3Qm94PSIwIDAgNzIwIDQyMCI+CjxyZWN0IHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiByeD0iMjgiIGZpbGw9IiNmOGZiZmYiLz4KPHJlY3QgeD0iMTgiIHk9IjE4IiB3aWR0aD0iNjg0IiBoZWlnaHQ9IjM4NCIgcng9IjI0IiBmaWxsPSIjZmZmZmZmIiBzdHJva2U9IiNkYmUxZWEiIHN0cm9rZS13aWR0aD0iMyIvPgo8Y2lyY2xlIGN4PSIxODAiIGN5PSIxODUiIHI9IjEwNSIgZmlsbD0iI2VlZjRmZiIvPgo8dGV4dCB4PSIxODAiIHk9IjIxMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSI4MiI+8J+PrTwvdGV4dD4KPHRleHQgeD0iMzYwIiB5PSIyMTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iNzYiPvCfjbE8L3RleHQ+Cjx0ZXh0IHg9IjU0MCIgeT0iMjEwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9Ijc2Ij7inqHvuI88L3RleHQ+Cjx0ZXh0IHg9IjM2MCIgeT0iMzIyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwsTm90byBTYW5zIEpQLHNhbnMtc2VyaWYiIGZvbnQtd2VpZ2h0PSI3MDAiIGZvbnQtc2l6ZT0iMjkiIGZpbGw9IiMxZjI5MzciPuODqeOCpOODs+OBq+WFpeOBo+OBpuOBrumjn+WTgeijvemAoO+8iOW8geW9k+WFt+adkOe9ruOBjeODu+OCteODs+ODieOCpDwvdGV4dD4KPHRleHQgeD0iMzYwIiB5PSIzNjAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCxOb3RvIFNhbnMgSlAsc2Fucy1zZXJpZiIgZm9udC13ZWlnaHQ9IjcwMCIgZm9udC1zaXplPSIyNCIgZmlsbD0iIzFmMjkzNyI+44OD44OB6KO96YCg44O75a655Zmo44Gu44OV44K/5Y+W44KK5LuY44GR44O7566x6Kmw44KB562J77yJPC90ZXh0Pjwvc3ZnPg==", "工業用のネジなどの部品製造": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiB2aWV3Qm94PSIwIDAgNzIwIDQyMCI+CjxyZWN0IHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiByeD0iMjgiIGZpbGw9IiNmOGZiZmYiLz4KPHJlY3QgeD0iMTgiIHk9IjE4IiB3aWR0aD0iNjg0IiBoZWlnaHQ9IjM4NCIgcng9IjI0IiBmaWxsPSIjZmZmZmZmIiBzdHJva2U9IiNkYmUxZWEiIHN0cm9rZS13aWR0aD0iMyIvPgo8Y2lyY2xlIGN4PSIxODAiIGN5PSIxODUiIHI9IjEwNSIgZmlsbD0iI2VlZjRmZiIvPgo8dGV4dCB4PSIxODAiIHk9IjIxMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSI4MiI+8J+UqTwvdGV4dD4KPHRleHQgeD0iMzYwIiB5PSIyMTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iNzYiPuKame+4jzwvdGV4dD4KPHRleHQgeD0iNTQwIiB5PSIyMTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iNzYiPvCflI08L3RleHQ+Cjx0ZXh0IHg9IjM2MCIgeT0iMzIyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwsTm90byBTYW5zIEpQLHNhbnMtc2VyaWYiIGZvbnQtd2VpZ2h0PSI3MDAiIGZvbnQtc2l6ZT0iMjkiIGZpbGw9IiMxZjI5MzciPuW3pealreeUqOOBruODjeOCuOOBquOBqeOBrumDqOWTgeijvemAoDwvdGV4dD4KPC9zdmc+", "段ボール製造": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiB2aWV3Qm94PSIwIDAgNzIwIDQyMCI+CjxyZWN0IHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiByeD0iMjgiIGZpbGw9IiNmOGZiZmYiLz4KPHJlY3QgeD0iMTgiIHk9IjE4IiB3aWR0aD0iNjg0IiBoZWlnaHQ9IjM4NCIgcng9IjI0IiBmaWxsPSIjZmZmZmZmIiBzdHJva2U9IiNkYmUxZWEiIHN0cm9rZS13aWR0aD0iMyIvPgo8Y2lyY2xlIGN4PSIxODAiIGN5PSIxODUiIHI9IjEwNSIgZmlsbD0iI2VlZjRmZiIvPgo8dGV4dCB4PSIxODAiIHk9IjIxMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSI4MiI+8J+TpjwvdGV4dD4KPHRleHQgeD0iMzYwIiB5PSIyMTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iNzYiPvCfk5A8L3RleHQ+Cjx0ZXh0IHg9IjU0MCIgeT0iMjEwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9Ijc2Ij7wn6ewPC90ZXh0Pgo8dGV4dCB4PSIzNjAiIHk9IjMyMiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLE5vdG8gU2FucyBKUCxzYW5zLXNlcmlmIiBmb250LXdlaWdodD0iNzAwIiBmb250LXNpemU9IjI5IiBmaWxsPSIjMWYyOTM3Ij7mrrXjg5zjg7zjg6voo73pgKA8L3RleHQ+Cjwvc3ZnPg==", "梱包": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiB2aWV3Qm94PSIwIDAgNzIwIDQyMCI+CjxyZWN0IHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiByeD0iMjgiIGZpbGw9IiNmOGZiZmYiLz4KPHJlY3QgeD0iMTgiIHk9IjE4IiB3aWR0aD0iNjg0IiBoZWlnaHQ9IjM4NCIgcng9IjI0IiBmaWxsPSIjZmZmZmZmIiBzdHJva2U9IiNkYmUxZWEiIHN0cm9rZS13aWR0aD0iMyIvPgo8Y2lyY2xlIGN4PSIxODAiIGN5PSIxODUiIHI9IjEwNSIgZmlsbD0iI2VlZjRmZiIvPgo8dGV4dCB4PSIxODAiIHk9IjIxMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSI4MiI+8J+TpjwvdGV4dD4KPHRleHQgeD0iMzYwIiB5PSIyMTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iNzYiPvCfp7s8L3RleHQ+Cjx0ZXh0IHg9IjU0MCIgeT0iMjEwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9Ijc2Ij7wn4+377iPPC90ZXh0Pgo8dGV4dCB4PSIzNjAiIHk9IjMyMiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLE5vdG8gU2FucyBKUCxzYW5zLXNlcmlmIiBmb250LXdlaWdodD0iNzAwIiBmb250LXNpemU9IjI5IiBmaWxsPSIjMWYyOTM3Ij7morHljIU8L3RleHQ+Cjwvc3ZnPg==", "運搬": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiB2aWV3Qm94PSIwIDAgNzIwIDQyMCI+CjxyZWN0IHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiByeD0iMjgiIGZpbGw9IiNmOGZiZmYiLz4KPHJlY3QgeD0iMTgiIHk9IjE4IiB3aWR0aD0iNjg0IiBoZWlnaHQ9IjM4NCIgcng9IjI0IiBmaWxsPSIjZmZmZmZmIiBzdHJva2U9IiNkYmUxZWEiIHN0cm9rZS13aWR0aD0iMyIvPgo8Y2lyY2xlIGN4PSIxODAiIGN5PSIxODUiIHI9IjEwNSIgZmlsbD0iI2VlZjRmZiIvPgo8dGV4dCB4PSIxODAiIHk9IjIxMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSI4MiI+8J+TpjwvdGV4dD4KPHRleHQgeD0iMzYwIiB5PSIyMTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iNzYiPvCfm5I8L3RleHQ+Cjx0ZXh0IHg9IjU0MCIgeT0iMjEwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9Ijc2Ij7inqHvuI88L3RleHQ+Cjx0ZXh0IHg9IjM2MCIgeT0iMzIyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwsTm90byBTYW5zIEpQLHNhbnMtc2VyaWYiIGZvbnQtd2VpZ2h0PSI3MDAiIGZvbnQtc2l6ZT0iMjkiIGZpbGw9IiMxZjI5MzciPumBi+aQrDwvdGV4dD4KPC9zdmc+", "施設内の清掃": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiB2aWV3Qm94PSIwIDAgNzIwIDQyMCI+CjxyZWN0IHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiByeD0iMjgiIGZpbGw9IiNmOGZiZmYiLz4KPHJlY3QgeD0iMTgiIHk9IjE4IiB3aWR0aD0iNjg0IiBoZWlnaHQ9IjM4NCIgcng9IjI0IiBmaWxsPSIjZmZmZmZmIiBzdHJva2U9IiNkYmUxZWEiIHN0cm9rZS13aWR0aD0iMyIvPgo8Y2lyY2xlIGN4PSIxODAiIGN5PSIxODUiIHI9IjEwNSIgZmlsbD0iI2VlZjRmZiIvPgo8dGV4dCB4PSIxODAiIHk9IjIxMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSI4MiI+8J+PojwvdGV4dD4KPHRleHQgeD0iMzYwIiB5PSIyMTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iNzYiPvCfp7k8L3RleHQ+Cjx0ZXh0IHg9IjU0MCIgeT0iMjEwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9Ijc2Ij7inKg8L3RleHQ+Cjx0ZXh0IHg9IjM2MCIgeT0iMzIyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwsTm90byBTYW5zIEpQLHNhbnMtc2VyaWYiIGZvbnQtd2VpZ2h0PSI3MDAiIGZvbnQtc2l6ZT0iMjkiIGZpbGw9IiMxZjI5MzciPuaWveioreWGheOBrua4heaOgzwvdGV4dD4KPC9zdmc+", "お茶出し": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiB2aWV3Qm94PSIwIDAgNzIwIDQyMCI+CjxyZWN0IHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiByeD0iMjgiIGZpbGw9IiNmOGZiZmYiLz4KPHJlY3QgeD0iMTgiIHk9IjE4IiB3aWR0aD0iNjg0IiBoZWlnaHQ9IjM4NCIgcng9IjI0IiBmaWxsPSIjZmZmZmZmIiBzdHJva2U9IiNkYmUxZWEiIHN0cm9rZS13aWR0aD0iMyIvPgo8Y2lyY2xlIGN4PSIxODAiIGN5PSIxODUiIHI9IjEwNSIgZmlsbD0iI2VlZjRmZiIvPgo8dGV4dCB4PSIxODAiIHk9IjIxMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSI4MiI+8J+NtTwvdGV4dD4KPHRleHQgeD0iMzYwIiB5PSIyMTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iNzYiPvCfq5Y8L3RleHQ+Cjx0ZXh0IHg9IjU0MCIgeT0iMjEwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9Ijc2Ij7wn6eRPC90ZXh0Pgo8dGV4dCB4PSIzNjAiIHk9IjMyMiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLE5vdG8gU2FucyBKUCxzYW5zLXNlcmlmIiBmb250LXdlaWdodD0iNzAwIiBmb250LXNpemU9IjI5IiBmaWxsPSIjMWYyOTM3Ij7jgYrojLblh7rjgZc8L3RleHQ+Cjwvc3ZnPg==", "下膳": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiB2aWV3Qm94PSIwIDAgNzIwIDQyMCI+CjxyZWN0IHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiByeD0iMjgiIGZpbGw9IiNmOGZiZmYiLz4KPHJlY3QgeD0iMTgiIHk9IjE4IiB3aWR0aD0iNjg0IiBoZWlnaHQ9IjM4NCIgcng9IjI0IiBmaWxsPSIjZmZmZmZmIiBzdHJva2U9IiNkYmUxZWEiIHN0cm9rZS13aWR0aD0iMyIvPgo8Y2lyY2xlIGN4PSIxODAiIGN5PSIxODUiIHI9IjEwNSIgZmlsbD0iI2VlZjRmZiIvPgo8dGV4dCB4PSIxODAiIHk9IjIxMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSI4MiI+8J+Nve+4jzwvdGV4dD4KPHRleHQgeD0iMzYwIiB5PSIyMTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iNzYiPvCfp7o8L3RleHQ+Cjx0ZXh0IHg9IjU0MCIgeT0iMjEwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9Ijc2Ij7inqHvuI88L3RleHQ+Cjx0ZXh0IHg9IjM2MCIgeT0iMzIyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwsTm90byBTYW5zIEpQLHNhbnMtc2VyaWYiIGZvbnQtd2VpZ2h0PSI3MDAiIGZvbnQtc2l6ZT0iMjkiIGZpbGw9IiMxZjI5MzciPuS4i+iGszwvdGV4dD4KPC9zdmc+", "利用者の見守り": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiB2aWV3Qm94PSIwIDAgNzIwIDQyMCI+CjxyZWN0IHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiByeD0iMjgiIGZpbGw9IiNmOGZiZmYiLz4KPHJlY3QgeD0iMTgiIHk9IjE4IiB3aWR0aD0iNjg0IiBoZWlnaHQ9IjM4NCIgcng9IjI0IiBmaWxsPSIjZmZmZmZmIiBzdHJva2U9IiNkYmUxZWEiIHN0cm9rZS13aWR0aD0iMyIvPgo8Y2lyY2xlIGN4PSIxODAiIGN5PSIxODUiIHI9IjEwNSIgZmlsbD0iI2VlZjRmZiIvPgo8dGV4dCB4PSIxODAiIHk9IjIxMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSI4MiI+8J+nkTwvdGV4dD4KPHRleHQgeD0iMzYwIiB5PSIyMTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iNzYiPvCfkYA8L3RleHQ+Cjx0ZXh0IHg9IjU0MCIgeT0iMjEwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9Ijc2Ij7wn6SdPC90ZXh0Pgo8dGV4dCB4PSIzNjAiIHk9IjMyMiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLE5vdG8gU2FucyBKUCxzYW5zLXNlcmlmIiBmb250LXdlaWdodD0iNzAwIiBmb250LXNpemU9IjI5IiBmaWxsPSIjMWYyOTM3Ij7liKnnlKjogIXjga7opovlrojjgoo8L3RleHQ+Cjwvc3ZnPg==", "レクリエーションの補助": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiB2aWV3Qm94PSIwIDAgNzIwIDQyMCI+CjxyZWN0IHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiByeD0iMjgiIGZpbGw9IiNmOGZiZmYiLz4KPHJlY3QgeD0iMTgiIHk9IjE4IiB3aWR0aD0iNjg0IiBoZWlnaHQ9IjM4NCIgcng9IjI0IiBmaWxsPSIjZmZmZmZmIiBzdHJva2U9IiNkYmUxZWEiIHN0cm9rZS13aWR0aD0iMyIvPgo8Y2lyY2xlIGN4PSIxODAiIGN5PSIxODUiIHI9IjEwNSIgZmlsbD0iI2VlZjRmZiIvPgo8dGV4dCB4PSIxODAiIHk9IjIxMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSI4MiI+8J+OiDwvdGV4dD4KPHRleHQgeD0iMzYwIiB5PSIyMTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iNzYiPvCfjrI8L3RleHQ+Cjx0ZXh0IHg9IjU0MCIgeT0iMjEwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9Ijc2Ij7wn6SdPC90ZXh0Pgo8dGV4dCB4PSIzNjAiIHk9IjMyMiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLE5vdG8gU2FucyBKUCxzYW5zLXNlcmlmIiBmb250LXdlaWdodD0iNzAwIiBmb250LXNpemU9IjI5IiBmaWxsPSIjMWYyOTM3Ij7jg6zjgq/jg6rjgqjjg7zjgrfjg6fjg7Pjga7oo5zliqk8L3RleHQ+Cjwvc3ZnPg==", "子どもの見守り": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiB2aWV3Qm94PSIwIDAgNzIwIDQyMCI+CjxyZWN0IHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiByeD0iMjgiIGZpbGw9IiNmOGZiZmYiLz4KPHJlY3QgeD0iMTgiIHk9IjE4IiB3aWR0aD0iNjg0IiBoZWlnaHQ9IjM4NCIgcng9IjI0IiBmaWxsPSIjZmZmZmZmIiBzdHJva2U9IiNkYmUxZWEiIHN0cm9rZS13aWR0aD0iMyIvPgo8Y2lyY2xlIGN4PSIxODAiIGN5PSIxODUiIHI9IjEwNSIgZmlsbD0iI2VlZjRmZiIvPgo8dGV4dCB4PSIxODAiIHk9IjIxMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSI4MiI+8J+nkjwvdGV4dD4KPHRleHQgeD0iMzYwIiB5PSIyMTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iNzYiPvCfkYA8L3RleHQ+Cjx0ZXh0IHg9IjU0MCIgeT0iMjEwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9Ijc2Ij7wn6e4PC90ZXh0Pgo8dGV4dCB4PSIzNjAiIHk9IjMyMiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLE5vdG8gU2FucyBKUCxzYW5zLXNlcmlmIiBmb250LXdlaWdodD0iNzAwIiBmb250LXNpemU9IjI5IiBmaWxsPSIjMWYyOTM3Ij7lrZDjganjgoLjga7opovlrojjgoo8L3RleHQ+Cjwvc3ZnPg==", "給食準備": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiB2aWV3Qm94PSIwIDAgNzIwIDQyMCI+CjxyZWN0IHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiByeD0iMjgiIGZpbGw9IiNmOGZiZmYiLz4KPHJlY3QgeD0iMTgiIHk9IjE4IiB3aWR0aD0iNjg0IiBoZWlnaHQ9IjM4NCIgcng9IjI0IiBmaWxsPSIjZmZmZmZmIiBzdHJva2U9IiNkYmUxZWEiIHN0cm9rZS13aWR0aD0iMyIvPgo8Y2lyY2xlIGN4PSIxODAiIGN5PSIxODUiIHI9IjEwNSIgZmlsbD0iI2VlZjRmZiIvPgo8dGV4dCB4PSIxODAiIHk9IjIxMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSI4MiI+8J+NsTwvdGV4dD4KPHRleHQgeD0iMzYwIiB5PSIyMTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iNzYiPvCfpaI8L3RleHQ+Cjx0ZXh0IHg9IjU0MCIgeT0iMjEwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9Ijc2Ij7wn5GlPC90ZXh0Pgo8dGV4dCB4PSIzNjAiIHk9IjMyMiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLE5vdG8gU2FucyBKUCxzYW5zLXNlcmlmIiBmb250LXdlaWdodD0iNzAwIiBmb250LXNpemU9IjI5IiBmaWxsPSIjMWYyOTM3Ij7ntabpo5/mupblgpk8L3RleHQ+Cjwvc3ZnPg==", "玩具の消毒": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiB2aWV3Qm94PSIwIDAgNzIwIDQyMCI+CjxyZWN0IHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiByeD0iMjgiIGZpbGw9IiNmOGZiZmYiLz4KPHJlY3QgeD0iMTgiIHk9IjE4IiB3aWR0aD0iNjg0IiBoZWlnaHQ9IjM4NCIgcng9IjI0IiBmaWxsPSIjZmZmZmZmIiBzdHJva2U9IiNkYmUxZWEiIHN0cm9rZS13aWR0aD0iMyIvPgo8Y2lyY2xlIGN4PSIxODAiIGN5PSIxODUiIHI9IjEwNSIgZmlsbD0iI2VlZjRmZiIvPgo8dGV4dCB4PSIxODAiIHk9IjIxMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSI4MiI+8J+nuDwvdGV4dD4KPHRleHQgeD0iMzYwIiB5PSIyMTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iNzYiPvCfp7Q8L3RleHQ+Cjx0ZXh0IHg9IjU0MCIgeT0iMjEwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9Ijc2Ij7inKg8L3RleHQ+Cjx0ZXh0IHg9IjM2MCIgeT0iMzIyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwsTm90byBTYW5zIEpQLHNhbnMtc2VyaWYiIGZvbnQtd2VpZ2h0PSI3MDAiIGZvbnQtc2l6ZT0iMjkiIGZpbGw9IiMxZjI5MzciPueOqeWFt+OBrua2iOavkjwvdGV4dD4KPC9zdmc+", "ディーラーでの洗車業務": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiB2aWV3Qm94PSIwIDAgNzIwIDQyMCI+CjxyZWN0IHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiByeD0iMjgiIGZpbGw9IiNmOGZiZmYiLz4KPHJlY3QgeD0iMTgiIHk9IjE4IiB3aWR0aD0iNjg0IiBoZWlnaHQ9IjM4NCIgcng9IjI0IiBmaWxsPSIjZmZmZmZmIiBzdHJva2U9IiNkYmUxZWEiIHN0cm9rZS13aWR0aD0iMyIvPgo8Y2lyY2xlIGN4PSIxODAiIGN5PSIxODUiIHI9IjEwNSIgZmlsbD0iI2VlZjRmZiIvPgo8dGV4dCB4PSIxODAiIHk9IjIxMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSI4MiI+8J+alzwvdGV4dD4KPHRleHQgeD0iMzYwIiB5PSIyMTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iNzYiPvCfp708L3RleHQ+Cjx0ZXh0IHg9IjU0MCIgeT0iMjEwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9Ijc2Ij7wn5KnPC90ZXh0Pgo8dGV4dCB4PSIzNjAiIHk9IjMyMiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLE5vdG8gU2FucyBKUCxzYW5zLXNlcmlmIiBmb250LXdlaWdodD0iNzAwIiBmb250LXNpemU9IjI5IiBmaWxsPSIjMWYyOTM3Ij7jg4fjgqPjg7zjg6njg7zjgafjga7mtJfou4rmpa3li5k8L3RleHQ+Cjwvc3ZnPg==", "ビン・カンのリサイクル": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiB2aWV3Qm94PSIwIDAgNzIwIDQyMCI+CjxyZWN0IHdpZHRoPSI3MjAiIGhlaWdodD0iNDIwIiByeD0iMjgiIGZpbGw9IiNmOGZiZmYiLz4KPHJlY3QgeD0iMTgiIHk9IjE4IiB3aWR0aD0iNjg0IiBoZWlnaHQ9IjM4NCIgcng9IjI0IiBmaWxsPSIjZmZmZmZmIiBzdHJva2U9IiNkYmUxZWEiIHN0cm9rZS13aWR0aD0iMyIvPgo8Y2lyY2xlIGN4PSIxODAiIGN5PSIxODUiIHI9IjEwNSIgZmlsbD0iI2VlZjRmZiIvPgo8dGV4dCB4PSIxODAiIHk9IjIxMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSI4MiI+8J+NvjwvdGV4dD4KPHRleHQgeD0iMzYwIiB5PSIyMTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iNzYiPvCfpas8L3RleHQ+Cjx0ZXh0IHg9IjU0MCIgeT0iMjEwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9Ijc2Ij7imbvvuI88L3RleHQ+Cjx0ZXh0IHg9IjM2MCIgeT0iMzIyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwsTm90byBTYW5zIEpQLHNhbnMtc2VyaWYiIGZvbnQtd2VpZ2h0PSI3MDAiIGZvbnQtc2l6ZT0iMjkiIGZpbGw9IiMxZjI5MzciPuODk+ODs+ODu+OCq+ODs+OBruODquOCteOCpOOCr+ODqzwvdGV4dD4KPC9zdmc+"};
+
+const questions = [
+  {q:"人と関わる仕事はどう？", opts:[["好き・やってみたい","人と関わる"],["少なめがいい","一人で集中"],["どちらでもよい",null]]},
+  {q:"仕事中はどちらがいい？", opts:[["体を動かしたい","体を動かす"],["座ったり机で作業したい","パソコン"],["どちらでもよい",null]]},
+  {q:"どんな仕事のしかたが好き？", opts:[["同じ作業をくり返す","同じ作業"],["いろいろな仕事をする","いろいろな仕事"],["どちらでもよい",null]]},
+  {q:"自分の強みに近いのは？", opts:[["ていねい・正確","正確さ"],["はやく動く","スピード"],["どちらでもよい",null]]},
+  {q:"パソコンを使う仕事は？", opts:[["やってみたい","パソコン"],["できれば少ない方がいい","体を動かす"],["どちらでもよい",null]]},
+  {q:"仕事をするとき近いのは？", opts:[["一人で集中する方が得意","一人で集中"],["周りと協力する方が得意","人と関わる"],["どちらでもよい",null]]}
+];
+
+let qIndex=0, answers=[], currentJob=null, taskDetailReturn="job";
+
+
+const RATINGS_KEY = "shokushuTaskRatingsV1";
+const UNKNOWN_KEY = "shokushuTaskUnknownV1";
+const EXPERIENCED_KEY = "shokushuTaskExperiencedV1";
+let taskRatings = {};
+let taskUnknown = {};
+let taskExperienced = {};
+try{
+  taskRatings = JSON.parse(localStorage.getItem(RATINGS_KEY) || "{}");
+}catch(e){
+  taskRatings = {};
+}
+try{
+  taskUnknown = JSON.parse(localStorage.getItem(UNKNOWN_KEY) || "{}");
+}catch(e){
+  taskUnknown = {};
+}
+try{
+  taskExperienced = JSON.parse(localStorage.getItem(EXPERIENCED_KEY) || "{}");
+}catch(e){
+  taskExperienced = {};
+}
+
+function ratingKey(jobName, taskName){
+  return jobName + "||" + taskName;
+}
+
+function getRating(jobName, taskName){
+  return Number(taskRatings[ratingKey(jobName, taskName)] || 0);
+}
+
+function setRating(jobName, taskName, value){
+  taskRatings[ratingKey(jobName, taskName)] = Number(value);
+  if(Number(value) > 0){
+    delete taskUnknown[ratingKey(jobName, taskName)];
+    localStorage.setItem(UNKNOWN_KEY, JSON.stringify(taskUnknown));
+  }
+  localStorage.setItem(RATINGS_KEY, JSON.stringify(taskRatings));
+}
+
+function isUnknown(jobName, taskName){
+  return !!taskUnknown[ratingKey(jobName, taskName)];
+}
+
+function isExperienced(jobName, taskName){
+  return !!taskExperienced[ratingKey(jobName, taskName)];
+}
+
+function setUnknown(jobName, taskName){
+  const key = ratingKey(jobName, taskName);
+  if(taskUnknown[key]){
+    delete taskUnknown[key];
+  }else{
+    taskUnknown[key] = true;
+    taskRatings[key] = 0;
+    delete taskExperienced[key];
+    localStorage.setItem(RATINGS_KEY, JSON.stringify(taskRatings));
+    localStorage.setItem(EXPERIENCED_KEY, JSON.stringify(taskExperienced));
+  }
+  localStorage.setItem(UNKNOWN_KEY, JSON.stringify(taskUnknown));
+}
+
+function setExperienced(jobName, taskName){
+  const key = ratingKey(jobName, taskName);
+  if(taskExperienced[key]){
+    delete taskExperienced[key];
+  }else{
+    taskExperienced[key] = true;
+    delete taskUnknown[key];
+    localStorage.setItem(UNKNOWN_KEY, JSON.stringify(taskUnknown));
+  }
+  localStorage.setItem(EXPERIENCED_KEY, JSON.stringify(taskExperienced));
+}
+
+function starsHtml(jobName, taskName){
+  const current = getRating(jobName, taskName);
+  const unknown = isUnknown(jobName, taskName);
+  let s = `<div class="stars">`;
+  for(let i=1;i<=5;i++){
+    s += `<button class="star ${i<=current?'':'off'}" aria-label="${i}つ星" onclick="rateTask('${jobName.replace(/'/g,"\\'")}','${taskName.replace(/'/g,"\\'")}',${i});event.stopPropagation()">★</button>`;
+  }
+  s += `<button class="unknown-btn ${unknown?'active':''}" onclick="markUnknown('${jobName.replace(/'/g,"\\'")}','${taskName.replace(/'/g,"\\'")}');event.stopPropagation()">よくわからない</button>`;
+  s += `<button class="experienced-btn ${isExperienced(jobName,taskName)?'active':''}" onclick="markExperienced('${jobName.replace(/'/g,"\\'")}','${taskName.replace(/'/g,"\\'")}');event.stopPropagation()">体験済み</button>`;
+  s += `</div>`;
+  return s;
+}
+function rateTask(jobName, taskName, value){
+  setRating(jobName, taskName, value);
+  // Re-render current screen to reflect changes
+  const td = document.getElementById("taskDetail");
+  const detail = document.getElementById("detail");
+  const interests = document.getElementById("interests");
+  if(!td.classList.contains("hidden")){
+    const idx = jobs[jobName].tasks.findIndex(t=>t.name===taskName);
+    if(idx >= 0) showTaskDetail(jobName, idx);
+  }else if(!detail.classList.contains("hidden")){
+    showDetail(jobName);
+  }else if(!interests.classList.contains("hidden")){
+    showInterests();
+  }
+}
+
+function markUnknown(jobName, taskName){
+  setUnknown(jobName, taskName);
+  const td = document.getElementById("taskDetail");
+  const detail = document.getElementById("detail");
+  const interests = document.getElementById("interests");
+  if(!td.classList.contains("hidden")){
+    const idx = jobs[jobName].tasks.findIndex(t=>t.name===taskName);
+    if(idx >= 0) showTaskDetail(jobName, idx, taskDetailReturn);
+  }else if(!detail.classList.contains("hidden")){
+    showDetail(jobName);
+  }else if(!interests.classList.contains("hidden")){
+    showInterests();
+  }
+}
+
+function markExperienced(jobName, taskName){
+  setExperienced(jobName, taskName);
+  const td = document.getElementById("taskDetail");
+  const detail = document.getElementById("detail");
+  const interests = document.getElementById("interests");
+  if(!td.classList.contains("hidden")){
+    const idx = jobs[jobName].tasks.findIndex(t=>t.name===taskName);
+    if(idx >= 0) showTaskDetail(jobName, idx, taskDetailReturn);
+  }else if(!detail.classList.contains("hidden")){
+    showDetail(jobName);
+  }else if(!interests.classList.contains("hidden")){
+    showInterests();
+  }
+}
+
+
+function downloadValueOnePager(){
+  const importantItems = [];
+  const selectedItems = [];
+  const noPreferenceItems = [];
+
+  valueGroups.forEach(group=>{
+    group.items.forEach(item=>{
+      const choice = getValueChoice(group.name,item[0]);
+      const important = isValueImportant(group.name,item[0]);
+      if(important) importantItems.push({group:group.name,name:item[0],description:item[1],choice});
+      if(choice){
+        if(choice==="こだわりなし") noPreferenceItems.push({group:group.name,name:item[0],description:item[1]});
+        else selectedItems.push({group:group.name,name:item[0],description:item[1],choice});
+      }
+    });
+  });
+
+  if(!importantItems.length && !selectedItems.length && !noPreferenceItems.length){
+    alert("まだ価値観の選択がありません。選択してから保存してください。");
+    return;
+  }
+
+  const impHtml = importantItems.length ? importantItems.map(x=>`
+    <div class="importantRow">
+      <div class="importantName">★ ${x.name}</div>
+      ${x.choice ? `<div class="choiceHighlight">${x.choice}</div>` : ""}
+    </div>`).join("") : `<div class="empty">大事★はまだありません。</div>`;
+
+  const selectedByGroup = valueGroups.map(group=>{
+    const rows = selectedItems.filter(x=>x.group===group.name);
+    if(!rows.length) return "";
+    return `
+      <section class="groupBlock">
+        <h3>${group.name}</h3>
+        <div class="groupItemGrid">
+          ${rows.map(x=>`
+            <div class="item">
+              <div class="itemHead"><strong>${x.name}</strong></div>
+              <div class="choiceHighlight">${x.choice}</div>
+            </div>
+          `).join("")}
+        </div>
+      </section>`;
+  }).join("");
+
+  const noneHtml = noPreferenceItems.length ? `
+    <div class="listGrid">
+      ${noPreferenceItems.map(x=>`
+        <div class="item noneItem">
+          <div class="itemHead"><strong>${x.name}</strong></div>
+          <div class="noneBadge">こだわりなし</div>
+        </div>
+      `).join("")}
+    </div>` : `<div class="empty">「こだわりなし」の項目はありません。</div>`;
+
+  const report = `<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>働く価値観ワンペーパー</title>
+<style>
+@page{size:A4 portrait;margin:9mm}
+*{box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Yu Gothic","Meiryo",sans-serif;margin:0;color:#111827;background:#fff}
+.sheet{width:192mm;margin:0 auto}
+.header{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:7px}
+h1{font-size:20px;margin:0}
+.sub{font-size:10px;color:#6b7280;margin-top:3px}
+.student-info{display:flex;gap:5px;align-items:center;font-size:10px;white-space:nowrap}
+.box{display:inline-block;border-bottom:1px solid #111827;min-width:14mm;height:5mm}
+.namebox{min-width:32mm}
+h2{font-size:13px;margin:8px 0 5px;padding:4px 7px;background:#f1f5f9;border-radius:5px}
+h3{font-size:11px;margin:6px 0 4px;padding-left:6px;border-left:4px solid #94a3b8}
+.groupBlock{break-inside:avoid;margin:7px 0}
+.groupItemGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}
+.listGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}
+.item{border:1px solid #d1d5db;border-radius:6px;padding:5px 7px;break-inside:avoid;min-width:0}
+.noneItem{background:#f8fafc;border-style:dashed}
+.itemHead{display:flex;justify-content:space-between;gap:10px;font-size:10.5px}
+.desc{font-size:8.5px;color:#475569;line-height:1.35;margin-top:2px}
+.choiceHighlight{
+  display:inline-block;
+  margin-top:5px;
+  padding:3px 7px;
+  border-radius:999px;
+  background:#dbeafe;
+  border:1px solid #60a5fa;
+  color:#1d4ed8;
+  font-size:9px;
+  font-weight:800;
+}
+.noneBadge{
+  display:inline-block;
+  margin-top:5px;
+  padding:3px 7px;
+  border-radius:999px;
+  background:#e2e8f0;
+  border:1px solid #94a3b8;
+  color:#334155;
+  font-size:9px;
+  font-weight:800;
+}
+.importantList{display:grid;grid-template-columns:1fr;gap:5px}
+.importantRow{
+  border:1.5px solid #ef4444;
+  border-radius:6px;
+  padding:6px 8px;
+  break-inside:avoid;
+  background:#fff7f7;
+}
+.importantName{font-size:10.5px;font-weight:800;color:#991b1b}
+.empty{font-size:9px;color:#64748b;padding:5px}
+.printBtn{position:fixed;right:18px;top:18px;padding:10px 16px;border:0;border-radius:10px;background:#2563eb;color:#fff;font-weight:700;cursor:pointer}
+@media print{.printBtn{display:none}.sheet{margin:0}}
+</style>
+</head>
+<body>
+<button class="printBtn" onclick="window.print()">PDFで保存 / 印刷</button>
+<div class="sheet">
+  <div class="header">
+    <div>
+      <h1>働く価値観 ワンペーパー</h1>
+      <div class="sub">自分が大切にしたいこと・選んだ条件の整理</div>
+    </div>
+    <div class="student-info">
+      <span class="box"></span><span>年</span>
+      <span class="box"></span><span>組</span>
+      <span>氏名</span><span class="box namebox"></span>
+    </div>
+  </div>
+
+  <h2>大事★一覧</h2>
+  <div class="importantList">${impHtml}</div>
+
+  ${selectedByGroup || `<div class="empty">選んだ項目はありません。</div>`}
+
+  <h2>こだわりなし一覧</h2>
+  ${noneHtml}
+</div>
+<script>setTimeout(()=>window.print(),350);<\/script>
+</body>
+</html>`;
+
+  const blob = new Blob([report], {type:"text/html;charset=utf-8"});
+  const url = URL.createObjectURL(blob);
+  const w = window.open(url, "_blank");
+  if(!w){
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "働く価値観_ワンペーパー.html";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  }
+  setTimeout(()=>URL.revokeObjectURL(url),60000);
+}
+
+function downloadOnePager(){
+  const stats = Object.keys(jobs).map(jobName=>{
+    const vals = jobs[jobName].tasks.map(t=>getRating(jobName,t.name)).filter(v=>v>0);
+    const total = vals.reduce((a,b)=>a+b,0);
+    const avg = vals.length ? total/vals.length : 0;
+    return {jobName,total,avg,count:vals.length};
+  }).filter(x=>x.total>0)
+    .sort((a,b)=> b.total-a.total || b.avg-a.avg || b.count-a.count)
+    .slice(0,5);
+
+  const rated = [];
+  Object.keys(jobs).forEach(jobName=>{
+    jobs[jobName].tasks.forEach(t=>{
+      const r = getRating(jobName,t.name);
+      if(r>0) rated.push({jobName,task:t,r});
+    });
+  });
+  rated.sort((a,b)=> b.r-a.r || a.jobName.localeCompare(b.jobName,"ja"));
+
+  const unknown = [];
+  Object.keys(jobs).forEach(jobName=>{
+    jobs[jobName].tasks.forEach(t=>{
+      if(isUnknown(jobName,t.name)) unknown.push({jobName,task:t});
+    });
+  });
+
+  const valueRanked = [];
+  const valueSummary = "";
+
+  if(stats.length===0 && rated.length===0 && unknown.length===0 && valueRanked.length===0){
+    alert("まだ☆がついていません。仕事内容に☆をつけてから保存してください。");
+    return;
+  }
+
+  const rankHtml = stats.length ? stats.map((x,i)=>`
+    <div class="rankRow">
+      <div class="rankNo">${i+1}位</div>
+      <div class="rankName">${x.jobName}</div>
+      <div class="rankStars">合計 ☆${x.total}</div>
+    </div>`).join("") : `<div class="empty">ランキングはまだありません。</div>`;
+
+  const ratedHtml = rated.length ? rated.map(x=>`
+    <div class="taskRow">
+      <div class="taskMain">
+        <div class="taskName">${x.task.name}</div>
+        <div class="taskMeta">${x.jobName}</div>
+      </div>
+      <div class="taskStars">${"★".repeat(x.r)}${"☆".repeat(5-x.r)}</div>
+    </div>`).join("") : `<div class="empty">☆をつけた仕事内容はありません。</div>`;
+
+  const unknownHtml = unknown.length ? unknown.map(x=>`
+    <div class="taskRow">
+      <div class="taskMain">
+        <div class="taskName">${x.task.name}</div>
+        <div class="taskMeta">${x.jobName}</div>
+      </div>
+      <div class="taskStars">よくわからない</div>
+    </div>`).join("") : `<div class="empty">よくわからない仕事内容はありません。</div>`;
+
+  const valueRankHtml = valueRanked.length ? valueRanked.map((v,i)=>`
+    <div class="rankRow">
+      <div class="rankNo">${i+1}位</div>
+      <div class="rankName">${v.name}
+        <div class="taskMeta">${v.ratedItems.slice(0,3).map(x=>`${x.name}（★${x.score}）`).join(" ／ ")}</div>
+      </div>
+      <div class="rankStars">合計 ★${v.total}</div>
+    </div>`).join("") : `<div class="empty">価値観の結果はまだありません。</div>`;
+
+  const totalRows = rated.length + unknown.length + valueRanked.length;
+  const compact = totalRows > 20 ? "verycompact" : (totalRows > 14 ? "compact" : "");
+
+  const report = `<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>仕事の興味ワンペーパー</title>
+<style>
+  @page{size:A4 portrait;margin:10mm}
+  *{box-sizing:border-box}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Yu Gothic","Meiryo",sans-serif;margin:0;color:#111827;background:white}
+  .sheet{width:190mm;min-height:277mm;margin:0 auto;padding:2mm}
+  .header{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:8px}
+  h1{font-size:22px;margin:0 0 4px}
+  .sub{font-size:11px;color:#6b7280}
+  .student-info{display:flex;gap:6px;align-items:center;font-size:11px;white-space:nowrap}
+  .student-info .box{display:inline-block;border-bottom:1px solid #111827;min-width:16mm;height:5mm}
+  .student-info .namebox{min-width:36mm}
+  h2{font-size:15px;margin:9px 0 6px;padding-bottom:4px;border-bottom:2px solid #111827}
+  .rankGrid{display:grid;grid-template-columns:1fr;gap:4px}
+  .rankRow{display:grid;grid-template-columns:18mm 1fr 30mm;gap:6px;align-items:center;border:1px solid #d1d5db;border-radius:7px;padding:6px 8px}
+  .rankNo{font-size:16px;font-weight:800}
+  .rankName{font-size:14px;font-weight:700}
+  .rankStars{font-size:12px;text-align:right}
+  .taskGrid{display:grid;grid-template-columns:1fr 1fr;gap:4px 6px}
+  .taskRow{display:grid;grid-template-columns:1fr auto;gap:6px;align-items:center;border:1px solid #e5e7eb;border-radius:6px;padding:5px 7px;min-height:12mm}
+  .taskName{font-size:12px;font-weight:700;line-height:1.2}
+  .taskMeta{font-size:9px;color:#6b7280;margin-top:2px}
+  .taskStars{font-size:12px;white-space:nowrap}
+  .compact .taskRow{min-height:9mm;padding:3px 6px}
+  .compact .taskName{font-size:10.5px}
+  .compact .taskMeta{font-size:8px}
+  .compact .taskStars{font-size:10px}
+  .verycompact .taskGrid{grid-template-columns:1fr 1fr 1fr;gap:3px}
+  .verycompact .taskRow{min-height:8mm;padding:3px 5px}
+  .verycompact .taskName{font-size:9px}
+  .verycompact .taskMeta{font-size:7.5px}
+  .verycompact .taskStars{font-size:8.5px}
+  .note{margin-top:8px;font-size:9px;color:#6b7280}
+  .printBtn{position:fixed;right:18px;top:18px;padding:10px 16px;border:0;border-radius:10px;background:#2563eb;color:white;font-weight:700;cursor:pointer}
+  @media print{
+    .printBtn{display:none}
+    body{background:white}
+    .sheet{margin:0;padding:0}
+  }
+</style>
+</head>
+<body class="${compact}">
+<button class="printBtn" onclick="window.print()">PDFで保存 / 印刷</button>
+<div class="sheet">
+  <div class="header">
+    <div>
+      <h1>仕事の興味 ワンペーパー</h1>
+      <div class="sub">仕事内容につけた☆をもとにした結果</div>
+    </div>
+    <div class="student-info">
+      <span class="box"></span><span>年</span>
+      <span class="box"></span><span>組</span>
+      <span>氏名</span><span class="box namebox"></span>
+    </div>
+  </div>
+
+  <h2>自分の興味ある仕事ランキング</h2>
+  <div class="rankGrid">${rankHtml}</div>
+
+  <h2>働く価値観チェック</h2>
+  ${valueSummary ? `<div style="font-size:11px;margin:0 0 6px;padding:6px 8px;border:1px solid #ddd;border-radius:6px"><strong>${valueSummary}</strong></div>` : ""}
+  <div class="rankGrid">${valueRankHtml}</div>
+
+  <h2>☆をつけた仕事内容</h2>
+  <div class="taskGrid">${ratedHtml}</div>
+
+  <h2>よくわからない仕事内容</h2>
+  <div class="taskGrid">${unknownHtml}</div>
+
+  <div class="note">※ ☆は「やってみたい度」を表します。結果は仕事内容への興味を整理するためのものです。</div>
+</div>
+<script>
+  setTimeout(()=>window.print(), 350);
+<\/script>
+</body>
+</html>`;
+
+  const blob = new Blob([report], {type:"text/html;charset=utf-8"});
+  const url = URL.createObjectURL(blob);
+  const w = window.open(url, "_blank");
+  if(!w){
+    // Pop-up blocked: download the report HTML instead.
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "仕事の興味_ワンペーパー.html";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  }
+  setTimeout(()=>URL.revokeObjectURL(url), 60000);
+}
+
+function showInterests(){
+  hideAll();
+  document.getElementById("interests").classList.remove("hidden");
+
+  // Job ranking: total stars and average among rated tasks.
+  const jobStats = Object.keys(jobs).map(jobName=>{
+    const vals = jobs[jobName].tasks.map(t=>getRating(jobName,t.name)).filter(v=>v>0);
+    const total = vals.reduce((a,b)=>a+b,0);
+    const avg = vals.length ? total/vals.length : 0;
+    return {jobName,total,avg,count:vals.length};
+  }).filter(x=>x.total>0)
+    .sort((a,b)=> b.total-a.total || b.avg-a.avg || b.count-a.count)
+    .slice(0,5);
+
+  const rankBox = document.getElementById("jobRanking");
+  if(jobStats.length===0){
+    rankBox.innerHTML = `<div class="card"><p>まだ☆がついていません。気になる仕事内容に☆をつけてみましょう。</p></div>`;
+  }else{
+    rankBox.innerHTML = jobStats.map((x,i)=>`
+      <div class="rank-card">
+        <div class="rank-head">
+          <div><span class="rank-num">${i+1}位</span>　<strong>${x.jobName}</strong></div>
+          <div class="rank-score">合計 ☆${x.total}</div>
+        </div>
+        <div class="meta">☆をつけた仕事内容 ${x.count}件 ／ 平均 ${x.avg.toFixed(1)}</div>
+        <div class="nav"><button class="primary" onclick="showDetail('${x.jobName.replace(/'/g,"\\'")}')">この職種を見る</button></div>
+      </div>`).join("");
+  }
+
+  // Rated tasks list
+  const rated = [];
+  Object.keys(jobs).forEach(jobName=>{
+    jobs[jobName].tasks.forEach((t,idx)=>{
+      const r = getRating(jobName,t.name);
+      if(r>0) rated.push({jobName,task:t,idx,r});
+    });
+  });
+  rated.sort((a,b)=> b.r-a.r || a.jobName.localeCompare(b.jobName,"ja"));
+
+  const ratedBox = document.getElementById("ratedTasks");
+  if(rated.length===0){
+    ratedBox.innerHTML = `<div class="card"><p>☆1以上をつけた仕事内容がここに表示されます。</p></div>`;
+  }else{
+    ratedBox.innerHTML = rated.map(x=>`
+      <div class="rated-item">
+        <div class="result-title">
+          <strong>${x.task.name}</strong>
+          <span class="rank-score">${"★".repeat(x.r)}${"☆".repeat(5-x.r)}</span>
+        </div>
+        <div class="meta">${x.jobName} ／ ${x.task.summary}</div>
+        <div class="nav"><button class="secondary" onclick="showTaskDetail('${x.jobName.replace(/'/g,"\\'")}',${x.idx},'interests')">くわしく見る</button></div>
+      </div>`).join("");
+  }
+
+  const unknown = [];
+  Object.keys(jobs).forEach(jobName=>{
+    jobs[jobName].tasks.forEach((t,idx)=>{
+      if(isUnknown(jobName,t.name)) unknown.push({jobName,task:t,idx});
+    });
+  });
+
+  const unknownBox = document.getElementById("unknownTasks");
+  if(unknown.length===0){
+    unknownBox.innerHTML = `<div class="card"><p>「よくわからない」を選んだ仕事内容はありません。</p></div>`;
+  }else{
+    unknownBox.innerHTML = unknown.map(x=>`
+      <div class="unknown-item">
+        <div class="result-title">
+          <strong>${x.task.name}</strong>
+          <span class="saved-badge">よくわからない</span>
+        </div>
+        <div class="meta">${x.jobName} ／ ${x.task.summary}</div>
+        <div class="nav"><button class="secondary" onclick="showTaskDetail('${x.jobName.replace(/'/g,"\\'")}',${x.idx},'interests')">くわしく見る</button></div>
+      </div>`).join("");
+  }
+}
+
+function hideAll(){
+  ["home","quiz","results","jobs","detail","values","interests","taskDetail"].forEach(id=>document.getElementById(id).classList.add("hidden"));
+}
+function goHome(){hideAll();document.getElementById("home").classList.remove("hidden");}
+function startQuiz(){qIndex=0;answers=[];renderQuestion();}
+function renderQuestion(){
+  hideAll();document.getElementById("quiz").classList.remove("hidden");
+  const q=questions[qIndex];
+  document.getElementById("qTitle").textContent=`質問 ${qIndex+1} / ${questions.length}　${q.q}`;
+  const box=document.getElementById("choices");box.innerHTML="";
+  q.opts.forEach(([label,key])=>{
+    const b=document.createElement("button"); b.className="choice"; b.textContent=label;
+    b.onclick=()=>{answers[qIndex]=key; qIndex++; qIndex<questions.length?renderQuestion():showResults();};
+    box.appendChild(b);
+  });
+}
+function prevQuestion(){if(qIndex===0){goHome();return;} qIndex--;renderQuestion();}
+function scoreJob(name){const job=jobs[name]; let s=0; answers.forEach(a=>{if(a && job.skills.includes(a)) s+=2;}); return s;}
+function showResults(){
+  hideAll();document.getElementById("results").classList.remove("hidden");
+  const ranked=Object.keys(jobs).map(n=>[n,scoreJob(n)]).sort((a,b)=>b[1]-a[1]).slice(0,3);
+  const list=document.getElementById("resultList");list.innerHTML="";
+  ranked.forEach(([name,score],i)=>{
+    const d=document.createElement("div"); d.className="card";
+    d.innerHTML=`<div class="result-title"><h3>${i+1}. ${name}</h3><span class="score">マッチ ${score}点</span></div>
+      <p>${jobs[name].tasks.slice(0,4).map(t=>t.name).join("／")} など</p>
+      <button class="primary">くわしく見る</button>`;
+    d.querySelector("button").onclick=()=>showDetail(name);
+    list.appendChild(d);
+  });
+}
+
+
+const VALUE_KEY = "shokushuValueRatingsV1";
+let valueRatings = {};
+try{
+  valueRatings = JSON.parse(localStorage.getItem(VALUE_KEY) || "{}");
+}catch(e){
+  valueRatings = {};
+}
+
+const valueGroups = [
+  {
+    name:"勤務日・働く時間・スケジュール",
+    items:[
+      ["通勤や出退勤のしやすさ","家から仕事に行く時の距離や時間、バスや電車の混み方、朝早い時間でも大丈夫か。"],
+      ["休日・勤務日のパターン","休みが土日祝かシフトか、急な仕事や残業があるか。"],
+      ["仕事内容やスケジュールの予測しやすさ","毎日同じことをする方が安心か、日によって変わっても大丈夫か。"],
+      ["勤務時間・働く長さ","短い時間がよいか、一日働けるか、残業があるかないか。"]
+    ]
+  },
+  {
+    name:"職場環境",
+    items:[
+      ["音やにぎやかさ","静かな方が落ち着くか、人が多くてにぎやかでも大丈夫か。"],
+      ["清潔さ・匂い・温度","部屋のきれいさ、におい、暑さ・寒さが気になるか。"],
+      ["季節や天候など環境変化","夏や冬で服装や室温が変わると気になるか。"],
+      ["落ち着けるスペースや休憩場所の有無","ゆっくりできる休憩場所があった方が安心か。"]
+    ]
+  },
+  {
+    name:"人間関係・コミュニケーション",
+    items:[
+      ["職場の人数や雰囲気","人は少ない方が安心か、たくさんいても大丈夫か。"],
+      ["初対面・新しい人との関わり方","新しい人とすぐ話せるか、慣れるまで時間がかかるか。"],
+      ["交流やイベント・雑談などへの参加","みんなで話すのが好きか、仕事だけで十分か。"],
+      ["気持ちや意見・感謝の伝えやすさ","うれしいことや困ったことを周りに伝えやすいか。"]
+    ]
+  },
+  {
+    name:"業務内容・作業スタイル",
+    items:[
+      ["一人での作業かチームでの協力か","一人で集中する方がやりやすいか、みんなと協力したいか。"],
+      ["体を動かす仕事か、座り仕事か","体を使う仕事が好きか、座って作業する方がよいか。"],
+      ["作業手順やルールの明確さ","やり方や順番が決まっている方が安心か。"],
+      ["作業スピードやペース","自分のペースでやりたいか、早いペースが好きか。"]
+    ]
+  },
+  {
+    name:"指示や説明・サポート方法",
+    items:[
+      ["指示や説明のスタイル","はじめにまとめて教えてほしいか、少しずつ教えてほしいか。"],
+      ["困ったとき・体調不良時の相談しやすさ","自分から相談しやすいか、声をかけてもらいたいか。"],
+      ["仕事・作業の覚え方","手順表があると安心か、手本を見せてもらう方が安心か。"],
+      ["フォローやフィードバック","こまめに声をかけてもらえると安心か。"]
+    ]
+  },
+  
+  {
+    name:"服装・身だしなみ・備品",
+    items:[
+      ["制服、髪型・身だしなみの自由度","決まった制服や髪型が安心か、ある程度自分で判断したいか。"],
+      ["季節や職場ごとの服装ルール","夏や冬で服が変わることが気になるか。"],
+      ["仕事で使うモノの準備や使いやすさ","使う道具が手元にあり、使いやすい方が安心か。"],
+      ["身だしなみや用意にかかる手間への抵抗感","毎日、決められた身だしなみや準備があると大変か。"]
+    ]
+  },
+  {
+    name:"自己理解・配慮・安心の条件",
+    items:[
+      ["困った時に言いやすい雰囲気","周りから声をかけてくれる方がよいか、自分から言えるか。"],
+      ["障害への理解・配慮","得意・不得意に合わせて工夫してくれる職場がよいか。"],
+      ["作業ペース・やり方","自分のペースを大事にしてくれる方が安心か。"],
+      ["人前に立つ機会への抵抗感","人前で話すことが苦手か、仲良くなるまで時間がかかるか。"]
+    ]
+  },
+  {
+    name:"変化・トラブル・イレギュラー",
+    items:[
+      ["イレギュラー・トラブルへの対応力","予定が急に変わっても大丈夫か。"],
+      ["トラブル・クレーム発生時の対処","困ったときに自分で対応できそうか、近くに誰かいると安心か。"],
+      ["変化への対応力","仕事で急に変わることがストレスになるか。"],
+      ["職場全体の「臨機応変さ」に合わせる力","その場に合わせて行動できるか、決まったことが変わると困るか。"]
+    ]
+  },
+  {
+    name:"はたらく目的・意欲・姿勢",
+    items:[
+      ["一人暮らしや趣味を楽しみたい","自分だけの生活をしたい、好きなことをもっと楽しみたいと思うか。"],
+      ["自立したい","自分のことは自分でできるようになりたいと思うか。"],
+      ["保護者に恩返しがしたい","「ありがとう」を伝えたり、助けてあげたいと思うか。"],
+      ["社会に貢献したい","誰かの役に立つ、みんなのためになる仕事がしたいと思うか。"]
+    ]
+  }
+];
+
+const valueGroupOrder = ['勤務日・働く時間・スケジュール', '業務内容・作業スタイル', '人間関係・コミュニケーション', '変化・トラブル・イレギュラー', '自己理解・配慮・安心の条件', '職場環境', '指示や説明・サポート方法', '服装・身だしなみ・備品', 'はたらく目的・意欲・姿勢'];
+valueGroups.sort((a,b)=>{
+  const ai = valueGroupOrder.indexOf(a.name);
+  const bi = valueGroupOrder.indexOf(b.name);
+  return (ai < 0 ? 999 : ai) - (bi < 0 ? 999 : bi);
+});
+
+
+
+const VALUE_CHOICE_KEY = "shokushuValueChoicesV1";
+const VALUE_IMPORTANT_KEY = "shokushuValueImportantV1";
+let valueChoices = {};
+let valueImportant = {};
+
+try{
+  valueChoices = JSON.parse(localStorage.getItem(VALUE_CHOICE_KEY) || "{}");
+}catch(e){ valueChoices = {}; }
+try{
+  valueImportant = JSON.parse(localStorage.getItem(VALUE_IMPORTANT_KEY) || "{}");
+}catch(e){ valueImportant = {}; }
+
+const valueChoiceOptions = {
+  "通勤や出退勤のしやすさ":["乗換なし","乗換1回","乗換2回以上大丈夫"],
+  "休日・勤務日のパターン":["こだわりなし","土日祝休み","平日休み・シフト休み"],
+  "仕事内容やスケジュールの予測しやすさ":["こだわりなし","毎日の流れがほぼ同じ","ある程度変化がある"],
+  "勤務時間・働く長さ":["こだわりなし","短めの勤務時間","フルタイムに近い勤務"],
+  "音やにぎやかさ":["こだわりなし","静かな職場","にぎやかな職場"],
+  "清潔さ・匂い・温度":["こだわりなし","清潔で匂いが少ない","暑い・寒いのが苦手"],
+  "季節や天候など環境変化":["こだわりなし","屋内中心","屋外や季節変化がある仕事も大丈夫"],
+  "落ち着けるスペースや休憩場所の有無":["こだわりなし","一人で落ち着ける場所がほしい","みんなと同じ休憩場所で大丈夫"],
+  "職場の人数や雰囲気":["こだわりなし","少人数で落ち着いた職場","人数が多く活気のある職場"],
+  "初対面・新しい人との関わり方":["こだわりなし","同じ人と関わることが多い","新しい人とも関わりたい"],
+  "交流やイベント・雑談などへの参加":["こだわりなし","交流は少なめがよい","交流や雑談も楽しみたい"],
+  "気持ちや意見・感謝の伝えやすさ":["こだわりなし","自分から伝えやすい職場","必要なときだけ伝えられればよい"],
+  "一人での作業かチームでの協力か":["こだわりなし","一人で進める作業","チームで協力する作業"],
+  "体を動かす仕事か、座り仕事か":["こだわりなし","体を動かす仕事","座って行う仕事"],
+  "作業手順やルールの明確さ":["こだわりなし","手順やルールがはっきりしている","自分で考えて進める場面がある"],
+  "作業スピードやペース":["こだわりなし","自分のペースで進めたい","周りのペースに合わせられる"],
+  "指示や説明のスタイル":["こだわりなし","口頭で短く説明","見本・写真・メモがある説明"],
+  "困ったとき・体調不良時の相談しやすさ":["こだわりなし","すぐ相談できる人がいる","必要なとき自分から相談する"],
+  "仕事・作業の覚え方":["こだわりなし","繰り返して覚える","メモや手順書を見ながら覚える"],
+  "フォローやフィードバック":["こだわりなし","こまめに確認・助言がほしい","ある程度任せてもらいたい"],
+  "休憩の取り方":["こだわりなし","決まった時間に休憩","仕事の区切りで柔軟に休憩"],
+  "休憩・昼食の過ごし方":["こだわりなし","一人で静かに過ごしたい","同僚と一緒に過ごしたい"],
+  "休憩場所やトイレ、更衣室の使いやすさ":["こだわりなし","設備が使いやすいことが大事","設備にはあまりこだわらない"],
+  "職場内でのリフレッシュ方法":["こだわりなし","静かに休める","会話や軽い運動などで気分転換できる"],
+  "制服、髪型・身だしなみの自由度":["こだわりなし","制服・ルールが決まっている方がよい","服装や髪型の自由度が高い方がよい"],
+  "季節や職場ごとの服装ルール":["こだわりなし","服装ルールが明確","季節ごとに自分で調整する"],
+  "仕事で使うモノの準備や使いやすさ":["こだわりなし","必要な物が用意されている","自分で準備・管理する"],
+  "身だしなみや用意にかかる手間への抵抗感":["こだわりなし","準備は少ない方がよい","準備が多くても大丈夫"],
+  "困った時に言いやすい雰囲気":["こだわりなし","声をかけやすい雰囲気が大事","自分から聞きに行ける"],
+  "障害への理解・配慮":["こだわりなし","理解や配慮があることが大事"],
+  "作業ペース・やり方":["こだわりなし","自分に合ったやり方を相談したい","職場のやり方に合わせたい"],
+  "人前に立つ機会への抵抗感":["こだわりなし","人前に立つことは少ない方がよい","人前に立つことも大丈夫"],
+  "イレギュラー・トラブルへの対応力":["こだわりなし","予定変更は少ない方がよい","急な変更にも対応したい"],
+  "トラブル・クレーム発生時の対処":["こだわりなし","上司や先輩が近くにいてほしい"],
+  "変化への対応力":["こだわりなし","同じ流れが続く方がよい","変化がある仕事も楽しめる"],
+  "職場全体の「臨機応変さ」に自分から合わせていく力":["その場に合わせて行動できる","変わると困る"],
+  "一人暮らしや趣味を楽しみたい":["こだわりなし","仕事と生活の時間を両立したい","収入を優先したい"],
+  "自立したい":["こだわりなし","自分で生活できるようになりたい","周りの支援も使いながら働きたい"],
+  "保護者に恩返しがしたい":["こだわりなし","家族のために働きたい","自分自身のために働きたい"],
+  "社会に貢献したい":["こだわりなし","人の役に立つ仕事がしたい","自分の得意を活かして働きたい"]
+};
+
+function getValueChoice(groupName,itemName){
+  return valueChoices[valueItemKey(groupName,itemName)] || "";
+}
+function setValueChoice(groupName,itemName,value){
+  const key = valueItemKey(groupName,itemName);
+  valueChoices[key] = value;
+  if(value==="こだわりなし" && valueImportant[key]){
+    delete valueImportant[key];
+    localStorage.setItem(VALUE_IMPORTANT_KEY, JSON.stringify(valueImportant));
+  }
+  localStorage.setItem(VALUE_CHOICE_KEY, JSON.stringify(valueChoices));
+  showValues();
+}
+function isValueImportant(groupName,itemName){
+  return !!valueImportant[valueItemKey(groupName,itemName)];
+}
+function toggleValueImportant(groupName,itemName){
+  const key = valueItemKey(groupName,itemName);
+  if(getValueChoice(groupName,itemName)==="こだわりなし") return;
+  if(valueImportant[key]) delete valueImportant[key];
+  else valueImportant[key] = true;
+  localStorage.setItem(VALUE_IMPORTANT_KEY, JSON.stringify(valueImportant));
+  showValues();
+}
+function valueChoiceButtonsHtml(groupName,itemName){
+  const current = getValueChoice(groupName,itemName);
+  const opts = valueChoiceOptions[itemName] || ["こだわりなし"];
+  return `<div class="value-choice-row">${opts.map(opt=>`
+    <button class="value-choice ${opt==="こだわりなし"?'no-pref':''} ${current===opt?'selected':''}" onclick="setValueChoice('${groupName.replace(/'/g,"\\'")}','${itemName.replace(/'/g,"\\'")}','${opt.replace(/'/g,"\\'")}')">${opt}</button>
+  `).join("")}</div>`;
+}
+
+function valueItemKey(groupName, itemName){
+  return groupName + "||" + itemName;
+}
+
+function getValueItemRating(groupName, itemName){
+  return Number(valueRatings[valueItemKey(groupName,itemName)] || 0);
+}
+
+function setValueItemRating(groupName, itemName, value){
+  valueRatings[valueItemKey(groupName,itemName)] = Number(value);
+  localStorage.setItem(VALUE_KEY, JSON.stringify(valueRatings));
+  showValues();
+}
+
+function valueItemStarsHtml(groupName, itemName){
+  const current = getValueItemRating(groupName,itemName);
+  let html = `<div class="value-stars">`;
+  for(let i=1;i<=5;i++){
+    html += `<button class="value-star ${i<=current?'':'off'}" aria-label="${i}つ星" onclick="setValueItemRating('${groupName.replace(/'/g,"\\'")}','${itemName.replace(/'/g,"\\'")}',${i})">★</button>`;
+  }
+  html += `</div>`;
+  return html;
+}
+
+function getValueItemRanking(){
+  const items = [];
+  valueGroups.forEach(group=>{
+    group.items.forEach(item=>{
+      const score = getValueItemRating(group.name,item[0]);
+      if(score>0){
+        items.push({
+          group: group.name,
+          name: item[0],
+          description: item[1],
+          score
+        });
+      }
+    });
+  });
+  return items.sort((a,b)=>b.score-a.score || a.name.localeCompare(b.name,"ja"));
+}
+
+function getValueGroupRanking(){
+  const groups = valueGroups.map(group=>{
+    const ratedItems = group.items.map(item=>({
+      name:item[0],
+      description:item[1],
+      score:getValueItemRating(group.name,item[0])
+    })).filter(x=>x.score>0)
+      .sort((a,b)=>b.score-a.score || a.name.localeCompare(b.name,"ja"));
+    const total = ratedItems.reduce((sum,x)=>sum+x.score,0);
+    const avg = ratedItems.length ? total/ratedItems.length : 0;
+    return {name:group.name,total,avg,ratedItems};
+  }).filter(g=>g.ratedItems.length>0)
+    .sort((a,b)=>b.total-a.total || b.avg-a.avg || b.ratedItems.length-a.ratedItems.length);
+  return groups;
+}
+
+function makeValueSummaryFromGroups(groups){
+  if(groups.length===0) return "";
+  const top = groups[0];
+  const topItems = top.ratedItems.slice(0,3).map(x=>`「${x.name}」`);
+  if(topItems.length===1){
+    return `${top.name}の中では、${topItems[0]}を特に大切にしています。`;
+  }else if(topItems.length===2){
+    return `${top.name}の中では、${topItems[0]}と${topItems[1]}を特に大切にしています。`;
+  }else{
+    return `${top.name}の中では、${topItems.slice(0,-1).join("、")}、そして${topItems[topItems.length-1]}を特に大切にしています。`;
+  }
+}
+
+const VALUE_NOTES_KEY = "shokushuValueNotesV1";
+let valueNotes = {};
+try{
+  valueNotes = JSON.parse(localStorage.getItem(VALUE_NOTES_KEY) || "{}");
+}catch(e){
+  valueNotes = {};
+}
+
+function getValueNote(groupName,itemName){
+  return valueNotes[valueItemKey(groupName,itemName)] || "";
+}
+
+function setValueNote(groupName,itemName,value){
+  valueNotes[valueItemKey(groupName,itemName)] = value;
+  localStorage.setItem(VALUE_NOTES_KEY, JSON.stringify(valueNotes));
+}
+
+function escapeHtml(str){
+  return String(str ?? "").replace(/[&<>"']/g, m=>({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+  }[m]));
+}
+
+function showValues(){
+  hideAll();
+  document.getElementById("values").classList.remove("hidden");
+
+  const importantItems = [];
+  const selectedItems = [];
+  const noPreferenceItems = [];
+
+  valueGroups.forEach(group=>{
+    group.items.forEach(item=>{
+      const choice = getValueChoice(group.name,item[0]);
+      const important = isValueImportant(group.name,item[0]);
+      if(important) importantItems.push({group:group.name,name:item[0],choice});
+      if(choice){
+        if(choice==="こだわりなし") noPreferenceItems.push({group:group.name,name:item[0]});
+        else selectedItems.push({group:group.name,name:item[0],choice});
+      }
+    });
+  });
+
+  const summaryBox = document.getElementById("valueRanking");
+  summaryBox.innerHTML = `
+    <div class="card">
+      <strong>大事★一覧</strong>
+      <div class="meta" style="margin-top:5px">${importantItems.length ? importantItems.map(x=>x.name).join(" ／ ") : "まだ選ばれていません"}</div>
+    </div>
+    <div class="card">
+      <strong>選択した一覧</strong>
+      <div class="meta" style="margin-top:5px">${selectedItems.length ? selectedItems.map(x=>`${x.name}：${x.choice}`).join(" ／ ") : "まだ選ばれていません"}</div>
+    </div>
+    <div class="card">
+      <strong>こだわりなし一覧</strong>
+      <div class="meta" style="margin-top:5px">${noPreferenceItems.length ? noPreferenceItems.map(x=>x.name).join(" ／ ") : "まだ選ばれていません"}</div>
+    </div>`;
+
+  const grid = document.getElementById("valueGrid");
+  grid.innerHTML = valueGroups.map(v=>{
+    const items = v.items.map(item=>{
+      const choice = getValueChoice(v.name,item[0]);
+      const important = isValueImportant(v.name,item[0]);
+      return `
+      <div class="value-item ${choice?'rated':''} ${choice==='こだわりなし'?'no-pref-item':''} ${important?'important-item':''}">
+        <div class="value-item-head">
+          <div>
+            <strong>${item[0]}</strong>
+            <small style="display:block;color:var(--muted);margin-top:3px;line-height:1.5">${item[1]}</small>
+          </div>
+          <button class="important-star ${important?'active':''}"
+            title="${choice==='こだわりなし'?'こだわりなしでは★をつけられません':'自分の中で特に大事'}"
+            ${choice==='こだわりなし'?'disabled':''}
+            onclick="toggleValueImportant('${v.name.replace(/'/g,"\\'")}','${item[0].replace(/'/g,"\\'")}')">★</button>
+        </div>
+        ${valueChoiceButtonsHtml(v.name,item[0])}
+      </div>`;
+    }).join("");
+    return `
+      <div class="value-card">
+        <h3>${v.name}</h3>
+        <div>${items}</div>
+      </div>`;
+  }).join("");
+}
+
+function getJobRankingMap(){
+  const stats = Object.keys(jobs).map(jobName=>{
+    const vals = jobs[jobName].tasks.map(t=>getRating(jobName,t.name)).filter(v=>v>0);
+    const total = vals.reduce((a,b)=>a+b,0);
+    const avg = vals.length ? total/vals.length : 0;
+    return {jobName,total,avg,count:vals.length};
+  }).filter(x=>x.total>0)
+    .sort((a,b)=> b.total-a.total || b.avg-a.avg || b.count-a.count);
+
+  const map = {};
+  stats.forEach((x,i)=>{ if(i<5) map[x.jobName]=i+1; });
+  return map;
+}
+
+function showJobs(){
+  hideAll();document.getElementById("jobs").classList.remove("hidden");
+  const grid=document.getElementById("jobGrid");grid.innerHTML="";
+  const rankMap = getJobRankingMap();
+  Object.keys(jobs).forEach(name=>{
+    const b=document.createElement("button");b.className="jobbtn";
+    const badge = rankMap[name] ? `<span class="job-rank-badge">${rankMap[name]}位</span>` : "";
+    b.innerHTML=`${badge}<strong style="font-size:19px">${name}</strong><br><span class="score">${jobs[name].examples.join("・")}</span>`;
+    b.onclick=()=>showDetail(name);grid.appendChild(b);
+  });
+}
+function showDetail(name){
+  currentJob=name;
+  hideAll();document.getElementById("detail").classList.remove("hidden");
+  const j=jobs[name];
+  document.getElementById("detailBody").innerHTML=`
+    <h2>${name}</h2>
+    <div class="card">
+      <h3>どんな仕事？</h3>
+      <div>${j.examples.map(x=>`<span class="tag">${x}</span>`).join("")}</div>
+    </div>
+    <br>
+    <div class="card">
+      <h3>主な仕事内容</h3>
+      <p class="mini">気になる作業を押すと、具体的な内容を見ることができます。</p>
+      <div class="tasks" id="taskButtons"></div>
+    </div>
+    <br>
+    <div class="card">
+      <h3>この仕事で大切になりやすい力</h3>
+      <div>${j.skills.map(x=>`<span class="tag">${x}</span>`).join("")}</div>
+      <p class="note">${j.note}</p>
+    </div>`;
+  const box=document.getElementById("taskButtons");
+  j.tasks.forEach((t,idx)=>{
+    const b=document.createElement("button"); b.className="taskbtn";
+    b.innerHTML=`<img class="task-thumb" src="${taskImages[t.name] || ''}" alt="${t.name}のイメージ"><strong>${t.name}</strong><span>${t.summary}</span>
+      <div class="rating-box ${isUnknown(name,t.name) ? 'unknown' : (getRating(name,t.name)>0 ? 'rated' : 'unrated')} ${isExperienced(name,t.name)?'experienced':''}" onclick="event.stopPropagation()">
+        <div class="rating-title">やってみたい度</div>
+        ${starsHtml(name,t.name)}
+      </div>`;
+    b.onclick=()=>showTaskDetail(name,idx,"job");
+    box.appendChild(b);
+  });
+}
+function showTaskDetail(jobName,idx,origin="job"){
+  taskDetailReturn = origin;
+  const t=jobs[jobName].tasks[idx];
+  hideAll();document.getElementById("taskDetail").classList.remove("hidden");
+  document.getElementById("taskBreadcrumb").textContent=`ホーム ＞ 仕事から探す ＞ ${jobName} ＞ ${t.name}`;
+  document.getElementById("taskDetailBody").innerHTML=`
+    <div style="margin-bottom:8px"><span class="tag" style="font-weight:700;background:#dbeafe;color:#1d4ed8">職種：${jobName}</span></div>
+    <h2>${t.name}</h2>
+    <img class="task-image" src="${taskImages[t.name] || ''}" alt="${t.name}のイメージ">
+    <div class="card task-detail">
+      <div class="rating-box ${isUnknown(jobName,t.name) ? 'unknown' : (getRating(jobName,t.name)>0 ? 'rated' : 'unrated')} ${isExperienced(jobName,t.name)?'experienced':''}">
+        <div class="rating-title">この仕事、やってみたい？</div>
+        ${starsHtml(jobName,t.name)}
+      </div>
+      <h3>かんたんに言うと</h3>
+      <p>${t.summary}</p>
+      <h3>どんなことをするの？</h3>
+      <p>${t.detail}</p>
+      <h3>仕事の流れ（例）</h3>
+      <ol>${t.steps.map(x=>`<li>${x}</li>`).join("")}</ol>
+      <h3>仕事のポイント</h3>
+      <p>${t.point}</p>
+    </div>`;
+  const backBtn = document.getElementById("backToJobBtn");
+  if(taskDetailReturn === "interests"){
+    backBtn.textContent = "☆をつけた仕事に戻る";
+    backBtn.onclick = ()=>showInterests();
+  }else{
+    backBtn.textContent = "この職種にもどる";
+    backBtn.onclick = ()=>showDetail(jobName);
+  }
+}
+</script>
+</body>
+</html>
