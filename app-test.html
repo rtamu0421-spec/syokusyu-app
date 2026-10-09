@@ -1487,7 +1487,7 @@ function showDetail(name){
   const box=document.getElementById("taskButtons");
   j.tasks.forEach((t,idx)=>{
     const b=document.createElement("button"); b.className="taskbtn";
-    b.innerHTML=`<img class="task-thumb" src="${taskImages[t.name] || ''}" alt="${t.name}のイメージ"><strong>${t.name}</strong><span>${t.summary}</span>
+    b.innerHTML=`<img class="task-thumb" src="${t.name === '商品補充・陳列' ? 'photos/01_supermarket_product_stocking.webp' : (taskImages[t.name] || '')}" alt="${t.name}のイメージ"><strong>${t.name}</strong><span>${t.summary}</span>
       <div class="rating-box ${isUnknown(name,t.name) ? 'unknown' : (getRating(name,t.name)>0 ? 'rated' : 'unrated')} ${isExperienced(name,t.name)?'experienced':''}" onclick="event.stopPropagation()">
         <div class="rating-title">やってみたい度</div>
         ${starsHtml(name,t.name)}
@@ -1504,7 +1504,7 @@ function showTaskDetail(jobName,idx,origin="job"){
   document.getElementById("taskDetailBody").innerHTML=`
     <div style="margin-bottom:8px"><span class="tag" style="font-weight:700;background:#dbeafe;color:#1d4ed8">職種：${jobName}</span></div>
     <h2>${t.name}</h2>
-    <img class="task-image" src="${taskImages[t.name] || ''}" alt="${t.name}のイメージ">
+    <img class="task-image" src="${t.name === '商品補充・陳列' ? 'photos/01_supermarket_product_stocking.webp' : (taskImages[t.name] || '')}" alt="${t.name}のイメージ">
     <div class="card task-detail">
       <div class="rating-box ${isUnknown(jobName,t.name) ? 'unknown' : (getRating(jobName,t.name)>0 ? 'rated' : 'unrated')} ${isExperienced(jobName,t.name)?'experienced':''}">
         <div class="rating-title">この仕事、やってみたい？</div>
