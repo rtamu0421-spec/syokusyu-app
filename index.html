@@ -150,8 +150,7 @@
     background:#fff7f7;
   }
   .resetbtn strong{color:#b91c1c}
-.profile-card{max-width:680px;margin:20px auto;padding:28px;border-radius:22px;background:#fff;border:2px solid #dbeafe}.profile-fields{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:22px 0}.profile-fields label{font-weight:700}.profile-fields input{display:block;width:100%;box-sizing:border-box;margin-top:7px;padding:14px;border:2px solid #cbd5e1;border-radius:12px;font-size:20px}.profile-name-field{grid-column:1/-1}.profile-start{width:100%;font-size:20px;padding:15px}.student-banner{margin:0 0 16px;padding:10px 14px;border-radius:12px;background:#eff6ff;font-weight:800;color:#1e3a8a}@media(max-width:600px){.profile-fields{grid-template-columns:1fr}.profile-name-field{grid-column:auto}}.work-photo{margin:8px 0 18px}.work-photo img{display:block;width:100%;max-height:420px;object-fit:cover;border-radius:16px;border:1px solid var(--line)}.work-photo figcaption{font-size:12px;color:var(--muted);margin-top:6px}.pictogram-optional{margin-bottom:16px}.pictogram-optional summary{cursor:pointer;color:#1d4ed8;font-weight:700}
-</style>
+.profile-card{max-width:680px;margin:20px auto;padding:28px;border-radius:22px;background:#fff;border:2px solid #dbeafe}.profile-fields{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:22px 0}.profile-fields label{font-weight:700}.profile-fields input{display:block;width:100%;box-sizing:border-box;margin-top:7px;padding:14px;border:2px solid #cbd5e1;border-radius:12px;font-size:20px}.profile-name-field{grid-column:1/-1}.profile-start{width:100%;font-size:20px;padding:15px}.student-banner{margin:0 0 16px;padding:10px 14px;border-radius:12px;background:#eff6ff;font-weight:800;color:#1e3a8a}@media(max-width:600px){.profile-fields{grid-template-columns:1fr}.profile-name-field{grid-column:auto}}</style>
 </head>
 <body>
 <div class="wrap">
@@ -230,7 +229,7 @@
     <section id="values" class="hidden"><div class="student-banner"><span data-student-name></span>の働く価値観</div>
       <div class="breadcrumb">ホーム ＞ 価値観チェックシート</div>
       <h2>はたらく価値観チェックシート</h2>
-      <p class="lead">はたらくときに「自分が大切にしたい」と思うことを考えて、自分に合う選択肢を選んでみよう。</p>
+      <p class="lead">はたらくときに「自分が大切にしたい」と思うことを考えて、小項目一つひとつに★1〜5をつけてみよう。</p>
 
       <h2>働く価値観チェック</h2>
       <p class="lead">小項目ごとに、自分に合う選択肢を選びます。特に大事だと思う小項目には右上の★をつけます。</p>
@@ -495,27 +494,6 @@ const questions = [
 let qIndex=0, answers=[], currentJob=null, taskDetailReturn="job";
 
 
-
-const workPhotos = {
-  "商品補充・陳列": "photos/work_01.webp",
-  "レジ補助（袋詰め）": "photos/work_02.webp",
-  "ピッキング": "photos/work_03.webp",
-  "食器洗浄": "photos/work_04.webp",
-  "調理補助（計量・皿だし・盛り付けなど）": "photos/work_05.webp",
-  "店舗内外の清掃": "photos/work_06.webp",
-  "文書のPDF化": "photos/work_07.webp",
-  "伝票整理": "photos/work_08.webp",
-  "工業用のネジなどの部品製造": "photos/work_09.webp",
-  "梱包": "photos/work_10.webp",
-  "郵便物の仕分け": "photos/work_11.webp",
-  "建物外回りの環境整備（除草・落ち葉回収・ゴミ回収・花壇等の整備）": "photos/work_14.webp",
-  "衣類のたたみ・ハンガーがけ": "photos/work_15.webp",
-  "利用者の見守り": "photos/work_17.webp",
-  "お総菜の製造": "photos/work_18.webp",
-  "お客様対応": "photos/work_19.webp",
-  "お客様への商品提供": "photos/work_20.webp",
-  "ビン・カンのリサイクル": "photos/work_22.webp"
-};
 const PROFILE_KEY="shokushuStudentProfileV1";
 let studentProfile={grade:"",className:"",name:""};
 try{studentProfile=Object.assign(studentProfile,JSON.parse(localStorage.getItem(PROFILE_KEY)||"{}"));}catch(e){}
@@ -782,9 +760,9 @@ h3{font-size:11px;margin:6px 0 4px;padding-left:6px;border-left:4px solid #94a3b
       <div class="sub">自分が大切にしたいこと・選んだ条件の整理</div>
     </div>
     <div class="student-info">
-      <span>${escapeHtml(studentProfile.grade)}年</span>
-      <span>${escapeHtml(studentProfile.className)}組</span>
-      <span>氏名 ${escapeHtml(studentProfile.name)}</span>
+      <span class="box"></span><span>年</span>
+      <span class="box"></span><span>組</span>
+      <span>氏名</span><span class="box namebox"></span>
     </div>
   </div>
 
@@ -939,13 +917,13 @@ function downloadOnePager(){
       <div class="sub">仕事内容につけた☆をもとにした結果</div>
     </div>
     <div class="student-info">
-      <span>${escapeHtml(studentProfile.grade)}年</span>
-      <span>${escapeHtml(studentProfile.className)}組</span>
-      <span>氏名 ${escapeHtml(studentProfile.name)}</span>
+      <span class="box"></span><span>年</span>
+      <span class="box"></span><span>組</span>
+      <span>氏名</span><span class="box namebox"></span>
     </div>
   </div>
 
-  <h2>${escapeHtml(studentNameSan())}の興味のある仕事ランキング</h2>
+  <h2><span data-student-name></span>の興味のある仕事ランキング</h2>
   <div class="rankGrid">${rankHtml}</div>
 
   <h2>働く価値観チェック</h2>
@@ -982,7 +960,6 @@ function downloadOnePager(){
 }
 
 function showInterests(){
-  updatePersonalizedLabels();
   hideAll();
   document.getElementById("interests").classList.remove("hidden");
 
@@ -1527,8 +1504,7 @@ function showTaskDetail(jobName,idx,origin="job"){
   document.getElementById("taskDetailBody").innerHTML=`
     <div style="margin-bottom:8px"><span class="tag" style="font-weight:700;background:#dbeafe;color:#1d4ed8">職種：${jobName}</span></div>
     <h2>${t.name}</h2>
-    ${workPhotos[t.name] ? `<figure class="work-photo"><img src="${workPhotos[t.name]}" alt="${t.name}の作業イメージ（AI生成）"><figcaption>AIで生成した仕事風景のイメージです。実際の職場とは異なる場合があります。</figcaption></figure>` : ''}
-    <details class="pictogram-optional"><summary>ピクトグラムを見る</summary><img class="task-image" src="${taskImages[t.name] || ''}" alt="${t.name}のピクトグラム"></details>
+    <img class="task-image" src="${taskImages[t.name] || ''}" alt="${t.name}のイメージ">
     <div class="card task-detail">
       <div class="rating-box ${isUnknown(jobName,t.name) ? 'unknown' : (getRating(jobName,t.name)>0 ? 'rated' : 'unrated')} ${isExperienced(jobName,t.name)?'experienced':''}">
         <div class="rating-title">この仕事、やってみたい？</div>
