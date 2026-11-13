@@ -150,7 +150,26 @@
     background:#fff7f7;
   }
   .resetbtn strong{color:#b91c1c}
-.profile-card{max-width:680px;margin:20px auto;padding:28px;border-radius:22px;background:#fff;border:2px solid #dbeafe}.profile-fields{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:22px 0}.profile-fields label{font-weight:700}.profile-fields input{display:block;width:100%;box-sizing:border-box;margin-top:7px;padding:14px;border:2px solid #cbd5e1;border-radius:12px;font-size:20px}.profile-name-field{grid-column:1/-1}.profile-start{width:100%;font-size:20px;padding:15px}.student-banner{margin:0 0 16px;padding:10px 14px;border-radius:12px;background:#eff6ff;font-weight:800;color:#1e3a8a}@media(max-width:600px){.profile-fields{grid-template-columns:1fr}.profile-name-field{grid-column:auto}}</style>
+.profile-card{max-width:680px;margin:20px auto;padding:28px;border-radius:22px;background:#fff;border:2px solid #dbeafe}.profile-fields{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:22px 0}.profile-fields label{font-weight:700}.profile-fields input{display:block;width:100%;box-sizing:border-box;margin-top:7px;padding:14px;border:2px solid #cbd5e1;border-radius:12px;font-size:20px}.profile-name-field{grid-column:1/-1}.profile-start{width:100%;font-size:20px;padding:15px}.student-banner{margin:0 0 16px;padding:10px 14px;border-radius:12px;background:#eff6ff;font-weight:800;color:#1e3a8a}@media(max-width:600px){.profile-fields{grid-template-columns:1fr}.profile-name-field{grid-column:auto}}
+  .top-nav{margin:0 0 12px;justify-content:flex-start}
+  .value-mode-tabs{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 18px}
+  .value-mode-tabs button{flex:1 1 160px;min-height:46px;font-size:15px}
+  .value-mode-tabs .mode-active{background:#2563eb;color:#fff;border-color:#2563eb}
+  .value-quiz-card{background:#fff;border:1px solid #dbe1ea;border-radius:18px;padding:20px;margin-top:12px}
+  .value-quiz-counter{font-weight:700;color:#2563eb;margin-bottom:10px}
+  .value-quiz-bar{height:9px;border-radius:999px;background:#e2e8f0;overflow:hidden;margin:8px 0 22px}
+  .value-quiz-fill{height:100%;background:#2563eb;transition:width .2s}
+  .value-quiz-opt{display:block;width:100%;text-align:left;padding:16px 18px;border:2px solid #cbd5e1;background:#fff;color:#1f2937;border-radius:12px;font-size:16px;font-weight:700;margin:10px 0;cursor:pointer;line-height:1.5}
+  .value-quiz-opt.chosen{background:#dbeafe;border-color:#2563eb}
+  .value-quiz-heart{display:flex;align-items:center;gap:12px;margin-top:18px}
+  .value-quiz-heart button{border:2px solid #fca5a5;border-radius:999px;background:#fff7f7;color:#991b1b;font-size:16px;padding:10px 15px;font-weight:700;cursor:pointer}
+  .value-quiz-heart button.chosen{background:#ffe4e6;color:#be123c;border-color:#fb7185}
+  .value-quiz-heart button:disabled{opacity:.4;cursor:not-allowed}
+  .value-quiz-nav{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:24px}
+  .value-quiz-nav button{min-height:44px}
+  .value-quiz-done{text-align:center;line-height:1.7}
+  .important-star.active{color:#e11d48}
+</style>
 </head>
 <body>
 <div class="wrap">
@@ -191,6 +210,7 @@
     </section>
 
     <section id="quiz" class="hidden">
+      <div class="nav top-nav"><button class="secondary" onclick="showJobs()">職種一覧へ</button><button class="secondary" onclick="goHome()">ホームへ</button></div>
       <div class="breadcrumb">ホーム ＞ 自分から探す</div>
       <h2 id="qTitle"></h2>
       <div id="choices"></div>
@@ -198,6 +218,7 @@
     </section>
 
     <section id="results" class="hidden">
+      <div class="nav top-nav"><button class="secondary" onclick="showJobs()">職種一覧へ</button><button class="secondary" onclick="goHome()">ホームへ</button></div>
       <div class="breadcrumb">ホーム ＞ 自分から探す ＞ 結果</div>
       <h2>あなたに合いそうな仕事</h2>
       <p class="lead">「向いている・向いていない」を決めるものではなく、仕事を知るための候補です。</p>
@@ -209,6 +230,7 @@
     </section>
 
     <section id="jobs" class="hidden"><div class="student-banner"><span data-student-name></span>の仕事をさがそう</div>
+      <div class="nav top-nav"><button class="secondary" onclick="goHome()">ホームへ</button></div>
       <div class="breadcrumb">ホーム ＞ 仕事から探す</div>
       <h2>職種を選ぶ</h2>
       <div id="jobGrid" class="grid"></div>
@@ -216,6 +238,7 @@
     </section>
 
     <section id="detail" class="hidden">
+      <div class="nav top-nav"><button class="secondary" onclick="showJobs()">職種一覧へ</button><button class="secondary" onclick="goHome()">ホームへ</button></div>
       <div class="breadcrumb">ホーム ＞ 仕事から探す ＞ 詳細</div>
       <div id="detailBody"></div>
       <div class="nav">
@@ -227,19 +250,27 @@
 
 
     <section id="values" class="hidden"><div class="student-banner"><span data-student-name></span>の働く価値観</div>
+      <div class="nav top-nav"><button class="secondary" onclick="goHome()">ホームへ</button></div>
       <div class="breadcrumb">ホーム ＞ 価値観チェックシート</div>
       <h2>はたらく価値観チェックシート</h2>
-      <p class="lead">はたらくときに「自分が大切にしたい」と思うことを考えて、小項目一つひとつに★1〜5をつけてみよう。</p>
+      <p class="lead">はたらくときに「自分が大切にしたい」と思うことを考えて、小項目ごとに自分に合う答えを選び、特に大事なことには♥をつけよう。</p>
 
       <h2>働く価値観チェック</h2>
-      <p class="lead">小項目ごとに、自分に合う選択肢を選びます。特に大事だと思う小項目には右上の★をつけます。</p>
+      <p class="lead">小項目ごとに、自分に合う選択肢を選びます。特に大事だと思う小項目には右上の♥をつけます。</p>
       <div class="nav" style="margin-bottom:14px">
         <button class="primary" onclick="downloadValueOnePager()">価値観ワンペーパーで保存</button>
       </div>
+      <div class="value-mode-tabs" role="group" aria-label="回答方法を選ぶ">
+        <button id="valueListModeBtn" class="secondary" onclick="switchValueMode('list')">一覧から選ぶ</button>
+        <button id="valueQuizModeBtn" class="secondary" onclick="switchValueMode('quiz')">一問一答で答える</button>
+      </div>
+      <div id="valueQuizPanel" class="hidden" aria-live="polite"></div>
+      <div id="valueListPanel">
       <div id="valueRanking" class="ranking"></div>
 
       <br>
       <div id="valueGrid" class="value-grid"></div>
+      </div>
 
       <div class="nav">
         <button class="secondary" onclick="goHome()">ホームへ</button>
@@ -271,6 +302,7 @@
     </section>
 
     <section id="taskDetail" class="hidden">
+      <div class="nav top-nav"><button class="secondary" onclick="showJobs()">職種一覧へ</button><button class="secondary" onclick="goHome()">ホームへ</button></div>
       <div class="breadcrumb" id="taskBreadcrumb"></div>
       <div id="taskDetailBody"></div>
       <div class="nav">
@@ -282,11 +314,9 @@
 </div>
 
 <script>
-
-
 const photoMap = {
-  "小売|青果の袋詰め・パッキング": "photos/01_supermarket_product_stocking.webp",
-  "小売|商品補充・陳列": "photos/02_produce_bagging.webp",
+  "小売|青果の袋詰め・パッキング": "photos/02_produce_bagging.webp",
+  "小売|商品補充・陳列": "photos/01_supermarket_product_stocking.webp",
   "小売|お総菜の製造": "photos/03_deli_preparation.webp",
   "小売|伝票確認・数の照合": "photos/04_invoice_quantity_check.webp",
   "小売|開店準備": "photos/05_store_opening_preparation.webp",
@@ -305,7 +335,7 @@ const photoMap = {
   "物流|郵便物の仕分け": "photos/18_mail_sorting.webp",
   "物流|ピッキング": "photos/19_picking.webp",
   "物流|荷受け": "photos/20_goods_receiving.webp",
-  "物流|出庫準備": "photos/21_shipping_preparation.webp",
+  "物流|出庫準備": "photos/21_shipping_preparation_v2.webp",
   "事務|文書・書類のスキャン": "photos/22_document_scanning.webp",
   "事務|ハンコを押す業務": "photos/23_company_name_stamping.webp",
   "事務|会議室清掃": "photos/24_meeting_room_cleaning.webp",
@@ -334,9 +364,7 @@ const photoMap = {
 };
 
 function getTaskImage(jobName, taskName) {
-  return photoMap[jobName + "|" + taskName]
-    || taskImages[taskName]
-    || "";
+  return photoMap[jobName + "|" + taskName] || taskImages[taskName] || "";
 }
 const T=(name,summary,detail,steps,point)=>({name,summary,detail,steps,point});
 
@@ -822,7 +850,7 @@ h3{font-size:11px;margin:6px 0 4px;padding-left:6px;border-left:4px solid #94a3b
     </div>
   </div>
 
-  <h2>大事★一覧</h2>
+  <h2>大事♥一覧</h2>
   <div class="importantList">${impHtml}</div>
 
   ${selectedByGroup || `<div class="empty">選んだ項目はありません。</div>`}
@@ -1430,6 +1458,73 @@ function escapeHtml(str){
   }[m]));
 }
 
+// 一問一答は一覧と同じ保存先を共有するため、途中から一覧に戻っても回答が残ります。
+let valueViewMode = "list";
+let valueQuestionIndex = 0;
+function getFlatValueQuestions(){
+  return valueGroups.flatMap(g=>g.items.map(item=>({group:g.name,name:item[0],description:item[1]})));
+}
+function switchValueMode(mode){
+  valueViewMode = mode === "quiz" ? "quiz" : "list";
+  if(valueViewMode === "quiz"){
+    const all = getFlatValueQuestions();
+    const firstEmpty = all.findIndex(q=>!getValueChoice(q.group,q.name));
+    valueQuestionIndex = firstEmpty < 0 ? all.length : firstEmpty;
+  }
+  showValues();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function renderValueQuestion(){
+  const questions = getFlatValueQuestions();
+  const count=questions.length;
+  const answered = questions.filter(q=>!!getValueChoice(q.group,q.name)).length;
+  const root=document.getElementById("valueQuizPanel");
+  if(valueQuestionIndex>=count){
+    root.innerHTML = `<div class="value-quiz-card value-quiz-done"><h3>回答おつかれさま！</h3><p>${count}項目中 ${answered}項目に回答しました。</p><p>一覧画面で、回答した内容や大切なこと（♥）を確認・修正できます。</p><div class="nav" style="justify-content:center"><button class="primary" onclick="switchValueMode('list')">一覧で回答を確認する</button><button class="secondary" onclick="valueQuestionIndex=0;showValues()">最初から見直す</button><button class="secondary" onclick="goHome()">ホームへ</button></div></div>`;
+    return;
+  }
+  const q=questions[valueQuestionIndex];
+  const opts=valueChoiceOptions[q.name]||["こだわりなし"];
+  const chosen=getValueChoice(q.group,q.name);
+  const isHeart=isValueImportant(q.group,q.name);
+  root.innerHTML=`<div class="value-quiz-card">
+    <div class="value-quiz-counter">質問 ${valueQuestionIndex+1} / ${count}　（回答済み ${answered}）</div>
+    <div class="value-quiz-bar"><div class="value-quiz-fill" style="width:${100*answered/count}%"></div></div>
+    <p style="color:#64748b;font-weight:700">${escapeHtml(q.group)}</p>
+    <h3 style="font-size:23px;margin:6px 0">${escapeHtml(q.name)}</h3>
+    <p>${escapeHtml(q.description)}</p>
+    <p style="font-weight:700">あなたの考えに近いものを1つ選ぼう</p>
+    ${opts.map((opt,i)=>`<button class="value-quiz-opt ${chosen===opt?'chosen':''}" onclick="answerValueQuestion(${i})">${chosen===opt?'✓　':''}${escapeHtml(opt)}</button>`).join('')}
+    <div class="value-quiz-heart"><button class="${isHeart?'chosen':''}" ${(!chosen || chosen==='こだわりなし')?'disabled':''} onclick="toggleValueQuestionHeart()">${isHeart?'♥':'♡'} 特に大事</button><span style="color:#64748b;font-size:13px">回答後に♥をつけられます</span></div>
+    <div class="value-quiz-nav"><button class="secondary" onclick="changeValueQuestion(-1)">${valueQuestionIndex===0?'一覧へ戻る':'前の質問'}</button><button class="secondary" onclick="changeValueQuestion(1)">次の質問・とばす</button></div>
+  </div>`;
+}
+function toggleValueQuestionHeart(){
+  const q=getFlatValueQuestions()[valueQuestionIndex];
+  if(q) toggleValueImportant(q.group,q.name);
+}
+function answerValueQuestion(index){
+  const q=getFlatValueQuestions()[valueQuestionIndex];
+  if(!q) return;
+  const opts=valueChoiceOptions[q.name]||["こだわりなし"];
+  if(index<0||index>=opts.length)return;
+  const key=valueItemKey(q.group,q.name);
+  valueChoices[key]=opts[index];
+  if(opts[index]==="こだわりなし"){
+    delete valueImportant[key];
+    localStorage.setItem(VALUE_IMPORTANT_KEY,JSON.stringify(valueImportant));
+  }
+  localStorage.setItem(VALUE_CHOICE_KEY,JSON.stringify(valueChoices));
+  // 答えを選んだ直後はその項目に留めて、♥をつける機会を確保する。
+  renderValueQuestion();
+}
+function changeValueQuestion(delta){
+  if(delta<0 && valueQuestionIndex===0){switchValueMode("list");return;}
+  valueQuestionIndex=Math.max(0,Math.min(getFlatValueQuestions().length,valueQuestionIndex+delta));
+  renderValueQuestion();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
 function showValues(){
   hideAll();
   document.getElementById("values").classList.remove("hidden");
@@ -1453,12 +1548,8 @@ function showValues(){
   const summaryBox = document.getElementById("valueRanking");
   summaryBox.innerHTML = `
     <div class="card">
-      <strong>大事★一覧</strong>
+      <strong>大事♥一覧</strong>
       <div class="meta" style="margin-top:5px">${importantItems.length ? importantItems.map(x=>x.name).join(" ／ ") : "まだ選ばれていません"}</div>
-    </div>
-    <div class="card">
-      <strong>選択した一覧</strong>
-      <div class="meta" style="margin-top:5px">${selectedItems.length ? selectedItems.map(x=>`${x.name}：${x.choice}`).join(" ／ ") : "まだ選ばれていません"}</div>
     </div>
     <div class="card">
       <strong>こだわりなし一覧</strong>
@@ -1478,9 +1569,9 @@ function showValues(){
             <small style="display:block;color:var(--muted);margin-top:3px;line-height:1.5">${item[1]}</small>
           </div>
           <button class="important-star ${important?'active':''}"
-            title="${choice==='こだわりなし'?'こだわりなしでは★をつけられません':'自分の中で特に大事'}"
+            title="${choice==='こだわりなし'?'こだわりなしでは♥をつけられません':'自分の中で特に大事'}"
             ${choice==='こだわりなし'?'disabled':''}
-            onclick="toggleValueImportant('${v.name.replace(/'/g,"\\'")}','${item[0].replace(/'/g,"\\'")}')">★</button>
+            onclick="toggleValueImportant('${v.name.replace(/'/g,"\\'")}','${item[0].replace(/'/g,"\\'")}')">♥</button>
         </div>
         ${valueChoiceButtonsHtml(v.name,item[0])}
       </div>`;
@@ -1491,8 +1582,13 @@ function showValues(){
         <div>${items}</div>
       </div>`;
   }).join("");
+  const listMode = valueViewMode === "list";
+  document.getElementById("valueListPanel").classList.toggle("hidden",!listMode);
+  document.getElementById("valueQuizPanel").classList.toggle("hidden",listMode);
+  document.getElementById("valueListModeBtn").classList.toggle("mode-active",listMode);
+  document.getElementById("valueQuizModeBtn").classList.toggle("mode-active",!listMode);
+  if(!listMode) renderValueQuestion();
 }
-
 function getJobRankingMap(){
   const stats = Object.keys(jobs).map(jobName=>{
     const vals = jobs[jobName].tasks.map(t=>getRating(jobName,t.name)).filter(v=>v>0);
@@ -1543,7 +1639,7 @@ function showDetail(name){
   const box=document.getElementById("taskButtons");
   j.tasks.forEach((t,idx)=>{
     const b=document.createElement("button"); b.className="taskbtn";
-    b.innerHTML=`<img class="task-thumb" src="${getTaskImage(name, t.name)}" alt="${t.name}のイメージ"><strong>${t.name}</strong><span>${t.summary}</span>
+    b.innerHTML=`<img class="task-thumb" src="${taskImages[t.name] || ''}" alt="${t.name}のイメージ"><strong>${t.name}</strong><span>${t.summary}</span>
       <div class="rating-box ${isUnknown(name,t.name) ? 'unknown' : (getRating(name,t.name)>0 ? 'rated' : 'unrated')} ${isExperienced(name,t.name)?'experienced':''}" onclick="event.stopPropagation()">
         <div class="rating-title">やってみたい度</div>
         ${starsHtml(name,t.name)}
@@ -1560,7 +1656,7 @@ function showTaskDetail(jobName,idx,origin="job"){
   document.getElementById("taskDetailBody").innerHTML=`
     <div style="margin-bottom:8px"><span class="tag" style="font-weight:700;background:#dbeafe;color:#1d4ed8">職種：${jobName}</span></div>
     <h2>${t.name}</h2>
-    <img class="task-image" src="${getTaskImage(jobName, t.name)}" alt="${t.name}のイメージ">
+    <img class="task-image" src="${taskImages[t.name] || ''}" alt="${t.name}のイメージ">
     <div class="card task-detail">
       <div class="rating-box ${isUnknown(jobName,t.name) ? 'unknown' : (getRating(jobName,t.name)>0 ? 'rated' : 'unrated')} ${isExperienced(jobName,t.name)?'experienced':''}">
         <div class="rating-title">この仕事、やってみたい？</div>
